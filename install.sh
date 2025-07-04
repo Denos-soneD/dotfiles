@@ -108,6 +108,7 @@ install_yay() {
 
 # HyDE Installation
 install_hyde() {
+  check_arch
   print_header "Setting up HyDE Environment"
 
   # Install base packages
@@ -202,10 +203,8 @@ install_zsh() {
 
 # Security Tools Installation
 install_security_tools() {
+  check_arch
   print_header "Setting up Security Tools"
-
-  # Install YAY first
-  install_yay
 
   # Check if BlackArch is already installed
   if pacman -Q blackarch-keyring &>/dev/null; then
@@ -223,6 +222,9 @@ install_security_tools() {
   print_info "Updating system packages..."
   sudo pacman -Syyu --noconfirm
   print_status "System updated"
+
+  # Install YAY if not present
+  install_yay
 }
 
 # Neovim Installation
