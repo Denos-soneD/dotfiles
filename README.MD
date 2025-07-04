@@ -38,9 +38,9 @@ git clone https://github.com/sindresorhus/pure.git "$HOME/.oh-my-zsh/custom/pure
 curl -o ~/.zshrc https://raw.githubusercontent.com/Denos-soneD/zshrc/main/zshrc && source ~/.zshrc
 ```
 
-### BLACK ARCK AND YAY INSTALL
+### BLACK ARCH AND YAY INSTALL
 ```
-curl -O https :// blackarch.org/strap.sh
+curl -O https://blackarch.org/strap.sh
 sudo chmod +x strap.sh
 sudo ./ strap.sh
 sudo pacman -Syyu --noconfirm
