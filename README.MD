@@ -22,6 +22,27 @@
 
 ---
 
+## 🤖 Automated Installation
+
+### 🚀 Quick Setup with Script
+
+Use our automated installation script for a hassle-free setup:
+
+```bash
+# Interactive Installation
+bash <(curl -fsSL https://raw.githubusercontent.com/Denos-soneD/dotfiles/main/install.sh)
+
+### ✨ Script Features
+
+- 🔍 **Smart Detection**: Checks existing installations
+- 🔄 **Update Management**: Updates existing components
+- 📊 **Status Reporting**: Shows installation status
+- 🎨 **Colorful Output**: Beautiful terminal interface
+- ⚡ **Fast Installation**: Skips already installed components
+- 🛡️ **Error Handling**: Robust error management
+
+---
+
 ## 📝 Prerequisites
 
 This configuration depends on the **HyDE Project**:
@@ -115,3 +136,35 @@ sudo pacman -Syyu --noconfirm
 # Install YAY AUR helper
 sudo pacman -S yay --noconfirm
 ```
+
+---
+
+## �🚀 NVIM Configuration
+
+### 📝 LazyVim Setup
+
+```bash
+# Install Neovim and dependencies
+sudo pacman -S nvim luarocks git --noconfirm
+
+# Clone custom Neovim configuration
+git clone https://github.com/Denos-soneD/nvim ~/.config/nvim
+
+# Launch Neovim to install plugins
+nvim
+```
+
+> **💡 Tip**: After first launch, Neovim will automatically install all plugins. This may take a few minutes.
+> It is recommended to run ```:checkhealth lazy``` after installation.
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if it helped you!**
+
+**Made with ❤️ by [Denos-soneD](https://github.com/Denos-soneD)**
+
+*Happy coding! 🚀*
+
+</div>
