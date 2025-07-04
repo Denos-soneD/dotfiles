@@ -108,7 +108,6 @@ install_yay() {
 
 # HyDE Installation
 install_hyde() {
-  check_arch
   print_header "Setting up HyDE Environment"
 
   # Install base packages
@@ -203,7 +202,6 @@ install_zsh() {
 
 # Security Tools Installation
 install_security_tools() {
-  check_arch
   print_header "Setting up Security Tools"
 
   # Check if BlackArch is already installed
@@ -248,44 +246,6 @@ install_neovim() {
   print_info "First launch of Neovim will install plugins automatically"
 }
 
-# Update function
-update_all() {
-  print_header "Updating all components"
-
-  # Update HyDE
-  if dir_exists "$HOME/HyDE"; then
-    print_info "Updating HyDE..."
-    cd "$HOME/HyDE/Scripts"
-    git pull origin master
-    ./install.sh -r
-    print_status "HyDE updated"
-  fi
-
-  # Update ZSH plugins
-  if dir_exists "$HOME/.oh-my-zsh/custom/plugins"; then
-    print_info "Updating ZSH plugins..."
-    for plugin in "$HOME/.oh-my-zsh/custom/plugins"/*; do
-      if [ -d "$plugin/.git" ]; then
-        echo "Updating $(basename "$plugin")..."
-        cd "$plugin" && git pull
-      fi
-    done
-    print_status "ZSH plugins updated"
-  fi
-
-  # Update Neovim config
-  if dir_exists "$HOME/.config/nvim/.git"; then
-    print_info "Updating Neovim configuration..."
-    cd "$HOME/.config/nvim"
-    git pull
-    print_status "Neovim configuration updated"
-  fi
-
-  # Update system packages
-  print_info "Updating system packages..."
-  sudo pacman -Syyu --noconfirm
-  print_status "System packages updated"
-}
 
 # Status check function
 check_status() {
@@ -354,9 +314,8 @@ show_menu() {
   echo "3) 🐚 Install ZSH setup only"
   echo "4) 🔒 Install Security Tools only"
   echo "5) 📝 Install Neovim only"
-  echo "6) 🔄 Update all components"
-  echo "7) 📊 Check installation status"
-  echo "8) ❌ Exit"
+  echo "6) 📊 Check installation status"
+  echo "7) ❌ Exit"
   echo
   read -p "Enter your choice (1-8): " choice
 }
@@ -394,13 +353,9 @@ main() {
       break
       ;;
     6)
-      update_all
-      break
-      ;;
-    7)
       check_status
       ;;
-    8)
+    7)
       print_info "Goodbye!"
       exit 0
       ;;
