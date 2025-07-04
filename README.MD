@@ -30,7 +30,7 @@ Use our automated installation script for a hassle-free setup:
 
 ```bash
 # Interactive Installation
-bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh?token=GHSAT0AAAAAADFDNQ3KMSJIHV4SARNHMBNO2DHUSKA')
+bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh')
 ```
 ### ✨ Script Features
 
