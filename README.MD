@@ -97,14 +97,6 @@ git clone https://github.com/sindresorhus/pure.git "$HOME/.oh-my-zsh/custom/pure
 curl -o ~/.zshrc https://raw.githubusercontent.com/Denos-soneD/zshrc/main/zshrc && source ~/.zshrc
 ```
 
-### 🌟 Features Included
-
-- **🎨 Syntax Highlighting**: Color-coded commands
-- **💡 Auto-suggestions**: Smart command completion
-- **🔍 Fuzzy Finding**: Quick file and command search
-- **✨ Pure Theme**: Minimal and elegant prompt
-- **⚡ Enhanced Tab Completion**: Improved navigation
-
 ---
 
 ## 🔒 Security Tools
@@ -123,29 +115,3 @@ sudo pacman -Syyu --noconfirm
 # Install YAY AUR helper
 sudo pacman -S yay --noconfirm
 ```
-
-### 🔍 What's Included
-
-- **🏴‍☠️ BlackArch**: Penetration testing and security research tools
-- **📦 YAY**: AUR helper for extended package management
-- **🔧 Extended toolset**: Access to thousands of security tools
-
----
-
-## 🎉 Final Notes
-
-After completing the installation:
-
-1. **🔄 Restart your terminal** to apply ZSH changes
-2. **🎨 Customize** your configuration as needed
-3. **🚀 Enjoy** your enhanced development environment!
-
----
-
-<div align="center">
-
-**⭐ Star this repository if it helped you!**
-
-*Made with ❤️ by [Denos-soneD](https://github.com/Denos-soneD)*
-
-</div>
