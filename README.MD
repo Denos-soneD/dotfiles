@@ -12,7 +12,7 @@ cd ~/HyDE/Scripts
 reboot
 ```
 
-> ℹ️ **UPDATE**  
+> [!UPDATE]
 >
 > ```
 > cd ~/HyDE/Scripts
