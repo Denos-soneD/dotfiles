@@ -31,8 +31,7 @@
 ### ⚡ **One-line installation command!**
 
 ```bash
-# 🔥 Interactive Installation - Copy/Paste this command
-bash <(curl -fsSL https://raw.githubusercontent.com/Denos-soneD/dotfiles/main/install.sh)
+bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh')
 ```
 
 <div style="background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 20px 0;">
