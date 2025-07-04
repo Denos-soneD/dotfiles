@@ -31,7 +31,7 @@ Use our automated installation script for a hassle-free setup:
 ```bash
 # Interactive Installation
 bash <(curl -fsSL https://raw.githubusercontent.com/Denos-soneD/dotfiles/main/install.sh)
-
+```
 ### ✨ Script Features
 
 - 🔍 **Smart Detection**: Checks existing installations
