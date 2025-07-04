@@ -22,24 +22,38 @@
 
 ---
 
-## 🤖 Automated Installation
+# 🤖 **AUTOMATED INSTALLATION**
 
-### 🚀 Quick Setup with Script
+<div align="center">
 
-Use our automated installation script for a hassle-free setup:
+## 🚀 **QUICK SETUP WITH SCRIPT**
+
+### ⚡ **One-line installation command!**
 
 ```bash
-# Interactive Installation
-bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh')
+# 🔥 Interactive Installation - Copy/Paste this command
+bash <(curl -fsSL https://raw.githubusercontent.com/Denos-soneD/dotfiles/main/install.sh)
 ```
-### ✨ Script Features
 
-- 🔍 **Smart Detection**: Checks existing installations
-- 🔄 **Update Management**: Updates existing components
-- 📊 **Status Reporting**: Shows installation status
-- 🎨 **Colorful Output**: Beautiful terminal interface
-- ⚡ **Fast Installation**: Skips already installed components
-- 🛡️ **Error Handling**: Robust error management
+<div style="background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 20px 0;">
+<h3>🎯 <strong>RECOMMENDED: Use the automated script above</strong></h3>
+<p><em>It automatically configures everything and saves you time!</em></p>
+</div>
+
+</div>
+
+### ✨ **Script Features**
+
+| Feature | Description |
+|---------|-------------|
+| 🔍 **Smart Detection** | Checks existing installations |
+| 🔄 **Update Management** | Updates existing components |
+| 📊 **Status Reporting** | Shows installation status |
+| 🎨 **Colorful Output** | Beautiful terminal interface |
+| ⚡ **Fast Installation** | Skips already installed components |
+| 🛡️ **Error Handling** | Robust error management |
+
+> **💡 Pro Tip**: The automated script is the recommended method for installation!
 
 ---
 
