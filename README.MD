@@ -103,7 +103,7 @@ Transform your shell experience with Oh My Zsh and powerful plugins!
 ### 🎯 Install Oh My Zsh
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh?token=GHSAT0AAAAAADFDNQ3KMSJIHV4SARNHMBNO2DHUSKA)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
 ### 🔧 Install Essential Plugins & Dependencies
