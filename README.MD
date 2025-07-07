@@ -1,12 +1,13 @@
-# 🎨 Dotfiles Environment Setup
+# 🎨 Dotfiles Configuration
 
 <div align="center">
 
 ![Arch Linux](https://img.shields.io/badge/Arch%20Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
 ![ZSH](https://img.shields.io/badge/ZSH-F15A24?style=for-the-badge&logo=zsh&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![Neovim](https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)
+![GNU Stow](https://img.shields.io/badge/GNU%20Stow-000000?style=for-the-badge&logo=gnu&logoColor=white)
 
-*A comprehensive dotfiles configuration for Arch Linux with HyDE, ZSH, and security tools*
+*Personal dotfiles managed with GNU Stow for Arch Linux*
 
 </div>
 
@@ -15,160 +16,133 @@
 ## 📋 Table of Contents
 
 - [🚀 Quick Start](#-quick-start)
-- [🎯 HyDE Installation](#-hyde-installation)
-- [🐚 ZSH Setup](#-zsh-setup)
-- [🔒 Security Tools](#-security-tools)
-- [📝 Prerequisites](#-prerequisites)
+- [🛠️ What's Included](#-whats-included)
+- [🔧 Manual Installation](#-manual-installation)
+- [📁 Structure](#-structure)
+- [⚙️ Configuration](#-configuration)
 
 ---
 
-# 🤖 **AUTOMATED INSTALLATION**
+# 🚀 **AUTOMATED INSTALLATION**
 
 <div align="center">
 
-## 🚀 **QUICK SETUP WITH SCRIPT**
-
-### ⚡ **One-line installation command!**
+## ⚡ **One-Command Setup**
 
 ```bash
 bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh')
 ```
 
 <div style="background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h3>🎯 <strong>RECOMMENDED: Use the automated script above</strong></h3>
-<p><em>It automatically configures everything and saves you time!</em></p>
+<h3>🎯 <strong>What this script does:</strong></h3>
+<ul>
+<li>✅ Installs and configures ZSH with Oh My Zsh</li>
+<li>✅ Sets up Neovim with LazyVim</li>
+<li>✅ Configures SSH with key generation</li>
+<li>✅ Uses GNU Stow for symlink management</li>
+<li>✅ Handles all dependencies automatically</li>
+</ul>
 </div>
 
 </div>
 
-### ✨ **Script Features**
+---
 
-| Feature | Description |
-|---------|-------------|
-| 🔍 **Smart Detection** | Checks existing installations |
-| 🔄 **Update Management** | Updates existing components |
-| 📊 **Status Reporting** | Shows installation status |
-| 🎨 **Colorful Output** | Beautiful terminal interface |
-| ⚡ **Fast Installation** | Skips already installed components |
-| 🛡️ **Error Handling** | Robust error management |
+## 🛠️ What's Included
 
-> **💡 Pro Tip**: The automated script is the recommended method for installation!
+| Component | Description |
+|-----------|-------------|
+| 🐚 **ZSH** | Oh My Zsh with plugins and Pure theme |
+| 🗂️ **GNU Stow** | Symlink management for dotfiles |
+| 🔐 **SSH** | Secure SSH configuration with key generation |
+| 📝 **Neovim** | LazyVim configuration with plugins |
+| 🎨 **Tmux** | Terminal multiplexer configuration |
 
 ---
 
-## 📝 Prerequisites
+## 🔧 Manual Installation
 
-This configuration depends on the **HyDE Project**:
-- 🔗 **Repository**: [HyDE-Project/HyDE](https://github.com/HyDE-Project/HyDE)
-- 🖥️ **OS**: Arch Linux (recommended)
-- 🛠️ **Tools**: Git, base-devel package group
-
----
-
-## 🚀 Quick Start
-
-### 1️⃣ Initial Setup
+### Prerequisites
 
 ```bash
 # Install essential packages
-pacman -S --needed git base-devel
+sudo pacman -S git stow zsh
+```
 
-# Clone HyDE project
-git clone --depth 1 https://github.com/HyDE-Project/HyDE ~/HyDE
+### Clone and Setup
 
-# Navigate and install
-cd ~/HyDE/Scripts
+```bash
+# Clone the repository
+git clone https://github.com/Denos-soneD/dotfiles.git ~/dotfiles
+
+# Navigate to dotfiles directory
+cd ~/dotfiles
+
+# Apply configurations with install.sh
 ./install.sh
-
-# Restart system
-reboot
-```
-
-### 🔄 Update HyDE
-
-> **💡 Tip**: Keep your HyDE installation up to date with these commands:
-
-```bash
-cd ~/HyDE/Scripts
-git pull origin master
-./install.sh -r
 ```
 
 ---
 
-## 🐚 ZSH Setup
+## 📁 Structure
 
-Transform your shell experience with Oh My Zsh and powerful plugins!
-
-### 🎯 Install Oh My Zsh
-
-```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
-
-### 🔧 Install Essential Plugins & Dependencies
-
-```bash
-# Install FZF for fuzzy finding
-sudo pacman -Syu fzf
-
-# Syntax highlighting plugin
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-# Auto-completions plugin
-git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions
-
-# Auto-suggestions plugin
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-# FZF tab completion
-git clone https://github.com/Aloxaf/fzf-tab ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fzf-tab
-
-# Pure theme for a clean prompt
-git clone https://github.com/sindresorhus/pure.git "$HOME/.oh-my-zsh/custom/pure"
-
-# Apply custom zshrc configuration
-curl -o ~/.zshrc https://raw.githubusercontent.com/Denos-soneD/zshrc/main/zshrc && source ~/.zshrc
+dotfiles/
+├── .stowrc                    # Stow configuration
+├── install.sh                 # Automated installation script
+├── zsh/
+│   └── .config/
+│       └── zsh/
+│           └── .zshrc         # ZSH configuration
+├── nvim/
+│   └── .config/
+│       └── nvim/              # Neovim configuration
+├── ssh/
+│   └── .ssh/
+│       └── config             # SSH configuration
+└── tmux/
+    └── .tmux.conf            # Tmux configuration
 ```
 
 ---
 
-## 🔒 Security Tools
+## ⚙️ Configuration
 
-### 🛡️ BlackArch & YAY Installation
+### ZSH Configuration
 
-```bash
-# Download and install BlackArch
-curl -O https://blackarch.org/strap.sh
-sudo chmod +x strap.sh
-sudo ./strap.sh
+The ZSH setup includes:
+- 🎨 **Pure theme** for a clean prompt
+- 🔍 **Syntax highlighting** for better readability
+- 💡 **Auto-suggestions** based on history
+- 🚀 **FZF integration** for fuzzy finding
+- 📝 **Smart completions** for commands
 
-# Update system packages
-sudo pacman -Syyu --noconfirm
+### SSH Configuration
 
-# Install YAY AUR helper
-sudo pacman -S yay --noconfirm
-```
+Secure SSH setup with:
+- 🔑 **Automatic key generation** (RSA & ED25519)
+- 🛡️ **Secure default settings**
+- 🔧 **Pre-configured hosts** (GitHub, etc.)
+- 🔐 **Proper file permissions**
+
+### Neovim Configuration
+
+LazyVim-based setup featuring:
+- 📦 **Lazy plugin management**
+- 🎨 **Modern UI** with telescope, neo-tree
+- 🔧 **LSP support** for multiple languages
+- 🚀 **Fast startup** with optimized loading
 
 ---
 
-## �🚀 NVIM Configuration
+## 🔄 Updating
 
-### 📝 LazyVim Setup
+To update your dotfiles:
 
 ```bash
-# Install Neovim and dependencies
-sudo pacman -S nvim luarocks git --noconfirm
-
-# Clone custom Neovim configuration
-git clone https://github.com/Denos-soneD/nvim ~/.config/nvim
-
-# Launch Neovim to install plugins
-nvim
+cd ~/dotfiles
+./install.sh
 ```
-
-> **💡 Tip**: After first launch, Neovim will automatically install all plugins. This may take a few minutes.
-> It is recommended to run ```:checkhealth lazy``` after installation.
 
 ---
 

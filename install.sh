@@ -8,16 +8,13 @@ set -e # Exit on any error
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Icons
 CHECKMARK="✅"
 CROSS="❌"
-WARNING="⚠️"
 INFO="ℹ️"
 ROCKET="🚀"
 
@@ -30,9 +27,6 @@ print_error() {
   echo -e "${RED}${CROSS} $1${NC}"
 }
 
-print_warning() {
-  echo -e "${YELLOW}${WARNING} $1${NC}"
-}
 
 print_info() {
   echo -e "${BLUE}${INFO} $1${NC}"
@@ -64,11 +58,6 @@ is_package_installed() {
   pacman -Q "$1" &>/dev/null
 }
 
-# Check if command exists
-command_exists() {
-  command -v "$1" &>/dev/null
-}
-
 # Check if directory exists
 dir_exists() {
   [ -d "$1" ]
@@ -92,42 +81,6 @@ install_packages() {
     sudo pacman -S --needed --noconfirm "${to_install[@]}"
     print_status "Packages installed successfully"
   fi
-}
-
-# Install YAY if not present
-install_yay() {
-  if command_exists yay; then
-    print_status "YAY is already installed"
-    return
-  fi
-
-  print_info "Installing YAY AUR helper..."
-  sudo pacman -S --needed --noconfirm yay
-  print_status "YAY installed successfully"
-}
-
-# HyDE Installation
-install_hyde() {
-  print_header "Setting up HyDE Environment"
-
-  # Install base packages
-  print_info "Installing base packages..."
-  install_packages git base-devel
-
-  # Check if HyDE is already installed
-  if dir_exists "$HOME/HyDE"; then
-    print_warning "HyDE directory already exists. Updating..."
-    cd "$HOME/HyDE/Scripts"
-    git pull origin master
-    ./install.sh -r
-  else
-    print_info "Cloning HyDE repository..."
-    git clone --depth 1 https://github.com/HyDE-Project/HyDE "$HOME/HyDE"
-    cd "$HOME/HyDE/Scripts"
-    ./install.sh
-  fi
-
-  print_status "HyDE installation completed"
 }
 
 # ZSH Setup
@@ -194,35 +147,7 @@ install_zsh() {
     print_status "Pure theme installed"
   fi
 
-  # Apply custom zshrc
-  print_info "Applying custom zshrc configuration..."
-  curl -o ~/.zshrc https://raw.githubusercontent.com/Denos-soneD/zshrc/main/zshrc
-  print_status "ZSH configuration applied"
-}
-
-# Security Tools Installation
-install_security_tools() {
-  print_header "Setting up Security Tools"
-
-  # Check if BlackArch is already installed
-  if pacman -Q blackarch-keyring &>/dev/null; then
-    print_status "BlackArch is already installed"
-  else
-    print_info "Installing BlackArch..."
-    curl -O https://blackarch.org/strap.sh
-    chmod +x strap.sh
-    sudo ./strap.sh
-    rm strap.sh
-    print_status "BlackArch installed successfully"
-  fi
-
-  # Update system
-  print_info "Updating system packages..."
-  sudo pacman -Syyu --noconfirm
-  print_status "System updated"
-
-  # Install YAY if not present
-  install_yay
+  echo export ZDOTDIR="$HOME/.config/zsh" >> "$HOME/.zshenv"
 }
 
 # Neovim Installation
@@ -232,92 +157,116 @@ install_neovim() {
   # Install Neovim and dependencies
   install_packages neovim luarocks git
 
-  # Check if custom nvim config exists
-  if dir_exists "$HOME/.config/nvim"; then
-    print_warning "Neovim config already exists. Backing up..."
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)"
-  fi
-
-  # Clone custom configuration
-  print_info "Installing custom Neovim configuration..."
-  git clone https://github.com/Denos-soneD/nvim "$HOME/.config/nvim"
-  print_status "Neovim configuration installed"
-
   print_info "First launch of Neovim will install plugins automatically"
 }
 
-
-# Status check function
-check_status() {
-  print_header "Checking installation status"
-
-  echo
-  print_info "System Information:"
-  echo "  OS: $(lsb_release -d 2>/dev/null | cut -f2 || echo "Unknown")"
-  echo "  Kernel: $(uname -r)"
-  echo "  Shell: $SHELL"
-  echo
-
-  print_info "Installation Status:"
-
-  # Check HyDE
-  if dir_exists "$HOME/HyDE"; then
-    print_status "HyDE: Installed"
+# SSH Setup
+install_ssh() {
+  print_header "Setting up SSH Configuration"
+  
+  # Install OpenSSH
+  install_packages openssh
+  
+  # Create SSH directory if it doesn't exist
+  if ! dir_exists "$HOME/.ssh"; then
+    print_info "Creating SSH directory..."
+    mkdir -p "$HOME/.ssh"
+    chmod 700 "$HOME/.ssh"
+    print_status "SSH directory created"
   else
-    print_error "HyDE: Not installed"
+    print_status "SSH directory already exists"
   fi
-
-  # Check ZSH
-  if dir_exists "$HOME/.oh-my-zsh"; then
-    print_status "Oh My Zsh: Installed"
+  
+  # Generate SSH key if it doesn't exist
+  if [ ! -f "$HOME/.ssh/id_rsa" ]; then
+    print_info "Generating SSH key..."
+    ssh-keygen -t rsa -b 4096 -f "$HOME/.ssh/id_rsa" -N "" -q
+    print_status "SSH key generated"
   else
-    print_error "Oh My Zsh: Not installed"
+    print_status "SSH key already exists"
   fi
-
-  # Check YAY
-  if command_exists yay; then
-    print_status "YAY: Installed"
+  
+  # Generate ED25519 key if it doesn't exist (more secure)
+  if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
+    print_info "Generating ED25519 SSH key..."
+    ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519" -N "" -q
+    print_status "ED25519 SSH key generated"
   else
-    print_error "YAY: Not installed"
+    print_status "ED25519 SSH key already exists"
   fi
-
-  # Check BlackArch
-  if pacman -Q blackarch-keyring &>/dev/null; then
-    print_status "BlackArch: Installed"
+  
+  # Apply SSH config using stow
+  if [ -f "$HOME/dotfiles/ssh/.ssh/config" ]; then
+    print_info "Applying SSH configuration with stow..."
+    cd "$HOME/dotfiles"
+    stow -t ~ ssh
+    print_status "SSH configuration applied"
   else
-    print_error "BlackArch: Not installed"
+    print_info "SSH config file not found, skipping configuration"
   fi
-
-  # Check Neovim
-  if command_exists nvim; then
-    print_status "Neovim: Installed ($(nvim --version | head -1))"
+  
+  # Set proper permissions
+  chmod 600 "$HOME/.ssh/id_rsa" "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+  chmod 644 "$HOME/.ssh/id_rsa.pub" "$HOME/.ssh/id_ed25519.pub" 2>/dev/null || true
+  chmod 600 "$HOME/.ssh/config" 2>/dev/null || true
+  
+  print_status "SSH permissions set correctly"
+  
+  # Enable SSH service
+  if systemctl is-enabled sshd.service &>/dev/null; then
+    print_status "SSH service already enabled"
   else
-    print_error "Neovim: Not installed"
+    print_info "Enabling SSH service..."
+    sudo systemctl enable sshd.service
+    print_status "SSH service enabled"
   fi
-
-  # Check Neovim config
-  if dir_exists "$HOME/.config/nvim"; then
-    print_status "Neovim Config: Installed"
+  
+  # Start SSH service
+  if systemctl is-active sshd.service &>/dev/null; then
+    print_status "SSH service already running"
   else
-    print_error "Neovim Config: Not installed"
+    print_info "Starting SSH service..."
+    sudo systemctl start sshd.service
+    print_status "SSH service started"
   fi
+  
+  # Display public keys
+  print_info "Your SSH public keys:"
+  echo -e "${BLUE}RSA:${NC}"
+  [ -f "$HOME/.ssh/id_rsa.pub" ] && cat "$HOME/.ssh/id_rsa.pub"
+  echo -e "${BLUE}ED25519:${NC}"
+  [ -f "$HOME/.ssh/id_ed25519.pub" ] && cat "$HOME/.ssh/id_ed25519.pub"
+  
+  print_status "SSH setup completed"
 }
 
-# Main menu
-show_menu() {
-  echo
-  print_header "Dotfiles Environment Setup Script"
-  echo
-  echo "Choose an option:"
-  echo "1) 🚀 Full Installation (All components)"
-  echo "2) 🎯 Install HyDE only"
-  echo "3) 🐚 Install ZSH setup only"
-  echo "4) 🔒 Install Security Tools only"
-  echo "5) 📝 Install Neovim only"
-  echo "6) 📊 Check installation status"
-  echo "7) ❌ Exit"
-  echo
-  read -p "Enter your choice (1-8): " choice
+# Initialize stow
+init_stow() {
+  print_header "Initializing Stow for Dotfiles Management"
+  if ! command -v stow &>/dev/null; then
+    print_info "Installing stow..."
+    install_packages stow
+    print_status "Stow installed"
+  fi
+
+  cd "$HOME/dotfiles"
+  
+  # Apply stow for each package
+  print_info "Applying stow configurations..."
+  
+  # Stow zsh configuration
+  if [ -d "zshrc" ]; then
+    stow -t ~ zshrc
+    print_status "ZSH configuration stowed"
+  fi
+  
+  # Stow neovim configuration  
+  if [ -d "nvim" ]; then
+    stow nvim
+    print_status "Neovim configuration stowed"
+  fi
+  
+  print_status "Stow initialization completed"
 }
 
 # Main function
@@ -325,46 +274,31 @@ main() {
   check_root
   check_arch
 
-  while true; do
-    show_menu
-    case $choice in
-    1)
-      install_hyde
-      install_zsh
-      install_security_tools
-      install_neovim
-      print_status "Full installation completed! Please reboot your system."
-      break
-      ;;
-    2)
-      install_hyde
-      break
-      ;;
-    3)
-      install_zsh
-      break
-      ;;
-    4)
-      install_security_tools
-      break
-      ;;
-    5)
-      install_neovim
-      break
-      ;;
-    6)
-      check_status
-      ;;
-    7)
-      print_info "Goodbye!"
-      exit 0
-      ;;
-    *)
-      print_error "Invalid option. Please try again."
-      ;;
-    esac
-  done
+  print_header "🚀 Starting Dotfiles Setup 🚀"
+
+  if ! dir_exists "$HOME/dotfiles"; then
+    git clone git@github.com:Denos-soneD/dotfiles.git "$HOME/dotfiles"
+  else
+    print_info "Dotfiles directory already exists, checking for updates..."
+    cd "$HOME/dotfiles"
+    git fetch origin master
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
+      print_info "Updates available, pulling latest changes..."
+      git pull origin master
+      print_status "Dotfiles updated successfully"
+    else
+      print_status "Dotfiles already up to date"
+    fi
+  fi
+ 
+  install_zsh
+  install_neovim
+  install_ssh
+  init_stow
+
+  print_status "Dotfiles setup completed successfully!"
+  print_info "Please restart your shell or run: source ~/.config/zsh/.zshrc"
 }
 
-# Run main function with all arguments
-main "$@"
+# Run main function
+main

@@ -1,0 +1,22 @@
+# ZSH files
+zsh/.zsh_history
+zsh/.zcomp*
+
+# SSH keys (never commit these!)
+ssh/.ssh/id_*
+ssh/.ssh/known_hosts
+ssh/.ssh/authorized_keys
+
+# Neovim temporary files
+nvim/.config/nvim/lazy-lock.json
+nvim/.config/nvim/.neoconf.json
+
+# System files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local configuration files
+*.local
+config.local
