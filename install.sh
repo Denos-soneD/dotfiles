@@ -27,7 +27,6 @@ print_error() {
   echo -e "${RED}${CROSS} $1${NC}"
 }
 
-
 print_info() {
   echo -e "${BLUE}${INFO} $1${NC}"
 }
@@ -147,7 +146,7 @@ install_zsh() {
     print_status "Pure theme installed"
   fi
 
-  echo export ZDOTDIR="$HOME/.config/zsh" >> "$HOME/.zshenv"
+  echo export ZDOTDIR="$HOME/.config/zsh" >>"$HOME/.zshenv"
 }
 
 # Neovim Installation
@@ -163,10 +162,10 @@ install_neovim() {
 # SSH Setup
 install_ssh() {
   print_header "Setting up SSH Configuration"
-  
+
   # Install OpenSSH
   install_packages openssh
-  
+
   # Create SSH directory if it doesn't exist
   if ! dir_exists "$HOME/.ssh"; then
     print_info "Creating SSH directory..."
@@ -176,7 +175,7 @@ install_ssh() {
   else
     print_status "SSH directory already exists"
   fi
-  
+
   # Generate SSH key if it doesn't exist
   if [ ! -f "$HOME/.ssh/id_rsa" ]; then
     print_info "Generating SSH key..."
@@ -185,7 +184,7 @@ install_ssh() {
   else
     print_status "SSH key already exists"
   fi
-  
+
   # Generate ED25519 key if it doesn't exist (more secure)
   if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
     print_info "Generating ED25519 SSH key..."
@@ -194,24 +193,14 @@ install_ssh() {
   else
     print_status "ED25519 SSH key already exists"
   fi
-  
-  # Apply SSH config using stow
-  if [ -f "$HOME/dotfiles/ssh/.ssh/config" ]; then
-    print_info "Applying SSH configuration with stow..."
-    cd "$HOME/dotfiles"
-    stow -t ~ ssh
-    print_status "SSH configuration applied"
-  else
-    print_info "SSH config file not found, skipping configuration"
-  fi
-  
+
   # Set proper permissions
   chmod 600 "$HOME/.ssh/id_rsa" "$HOME/.ssh/id_ed25519" 2>/dev/null || true
   chmod 644 "$HOME/.ssh/id_rsa.pub" "$HOME/.ssh/id_ed25519.pub" 2>/dev/null || true
   chmod 600 "$HOME/.ssh/config" 2>/dev/null || true
-  
+
   print_status "SSH permissions set correctly"
-  
+
   # Enable SSH service
   if systemctl is-enabled sshd.service &>/dev/null; then
     print_status "SSH service already enabled"
@@ -220,7 +209,7 @@ install_ssh() {
     sudo systemctl enable sshd.service
     print_status "SSH service enabled"
   fi
-  
+
   # Start SSH service
   if systemctl is-active sshd.service &>/dev/null; then
     print_status "SSH service already running"
@@ -229,14 +218,14 @@ install_ssh() {
     sudo systemctl start sshd.service
     print_status "SSH service started"
   fi
-  
+
   # Display public keys
   print_info "Your SSH public keys:"
   echo -e "${BLUE}RSA:${NC}"
   [ -f "$HOME/.ssh/id_rsa.pub" ] && cat "$HOME/.ssh/id_rsa.pub"
   echo -e "${BLUE}ED25519:${NC}"
   [ -f "$HOME/.ssh/id_ed25519.pub" ] && cat "$HOME/.ssh/id_ed25519.pub"
-  
+
   print_status "SSH setup completed"
 }
 
@@ -250,10 +239,10 @@ init_stow() {
   fi
 
   cd "$HOME/dotfiles"
-  
+
   # Apply stow for each package
   print_info "Applying stow configurations..."
-  
+
   stow .
 
   print_status "Stow initialization completed"
@@ -286,7 +275,7 @@ main() {
       print_status "Dotfiles already up to date"
     fi
   fi
- 
+
   install_zsh
   install_neovim
   install_ssh

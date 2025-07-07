@@ -1,50 +1,14 @@
 # 🎨 Dotfiles Configuration
 
-<div align="center">
-
-![Arch Linux](https://img.shields.io/badge/Arch%20Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
-![ZSH](https://img.shields.io/badge/ZSH-F15A24?style=for-the-badge&logo=zsh&logoColor=white)
-![Neovim](https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white)
-![GNU Stow](https://img.shields.io/badge/GNU%20Stow-000000?style=for-the-badge&logo=gnu&logoColor=white)
-
-*Personal dotfiles managed with GNU Stow for Arch Linux*
-
-</div>
-
 ---
 
-## 📋 Table of Contents
-
-- [🚀 Quick Start](#-quick-start)
-- [🛠️ What's Included](#-whats-included)
-- [🔧 Manual Installation](#-manual-installation)
-- [📁 Structure](#-structure)
-- [⚙️ Configuration](#-configuration)
-
----
-
-# 🚀 **AUTOMATED INSTALLATION**
-
-<div align="center">
+# 🚀 **AUTOMATED INSTALLATION / UPDATE**
 
 ## ⚡ **One-Command Setup**
 
 ```bash
 bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/heads/main/install.sh')
 ```
-
-<div style="background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h3>🎯 <strong>What this script does:</strong></h3>
-<ul>
-<li>✅ Installs and configures ZSH with Oh My Zsh</li>
-<li>✅ Sets up Neovim with LazyVim</li>
-<li>✅ Configures SSH with key generation</li>
-<li>✅ Uses GNU Stow for symlink management</li>
-<li>✅ Handles all dependencies automatically</li>
-</ul>
-</div>
-
-</div>
 
 ---
 
@@ -60,30 +24,6 @@ bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/h
 
 ---
 
-## 🔧 Manual Installation
-
-### Prerequisites
-
-```bash
-# Install essential packages
-sudo pacman -S git stow zsh
-```
-
-### Clone and Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Denos-soneD/dotfiles.git ~/dotfiles
-
-# Navigate to dotfiles directory
-cd ~/dotfiles
-
-# Apply configurations with install.sh
-./install.sh
-```
-
----
-
 ## 📁 Structure
 
 ```
@@ -91,17 +31,12 @@ dotfiles/
 ├── .stowrc                    # Stow configuration
 ├── install.sh                 # Automated installation script
 ├── zsh/
-│   └── .config/
-│       └── zsh/
-│           └── .zshrc         # ZSH configuration
-├── nvim/
-│   └── .config/
-│       └── nvim/              # Neovim configuration
+│     └── .zshrc               # ZSH configuration
+├── nvim/                      # Neovim configuration
 ├── ssh/
-│   └── .ssh/
-│       └── config             # SSH configuration
+│     └── ssh-config           # SSH configuration
 └── tmux/
-    └── .tmux.conf            # Tmux configuration
+    └── .tmux.conf             # Tmux configuration
 ```
 
 ---
@@ -132,17 +67,6 @@ LazyVim-based setup featuring:
 - 🎨 **Modern UI** with telescope, neo-tree
 - 🔧 **LSP support** for multiple languages
 - 🚀 **Fast startup** with optimized loading
-
----
-
-## 🔄 Updating
-
-To update your dotfiles:
-
-```bash
-cd ~/dotfiles
-./install.sh
-```
 
 ---
 
