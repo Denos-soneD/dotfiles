@@ -65,6 +65,9 @@ keymap_mode = "emacs"
 ## Set this to true and Atuin will minimize motion in the UI
 prefers_reduced_motion = false
 
+[dotfiles]
+enabled = true
+
 [sync]
 ## Enable sync v2 by default
 records = true
