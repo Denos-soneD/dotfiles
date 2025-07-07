@@ -37,6 +37,7 @@ source $ZSH/oh-my-zsh.sh
 
 bindkey -e
 bindkey '^[w' kill-region
+bindkey 'jj' atuin-search
 # bindkey "${terminfo[kcuu1]}" fzf-history-widget
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
