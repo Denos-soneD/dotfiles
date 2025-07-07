@@ -274,17 +274,17 @@ main() {
   check_root
   check_arch
 
-  print_header "🚀 Starting Dotfiles Setup 🚀"
+  print_header " Starting Dotfiles Setup 🚀"
 
   if ! dir_exists "$HOME/dotfiles"; then
     git clone git@github.com:Denos-soneD/dotfiles.git "$HOME/dotfiles"
   else
     print_info "Dotfiles directory already exists, checking for updates..."
     cd "$HOME/dotfiles"
-    git fetch origin master
-    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
+    git fetch origin main
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
       print_info "Updates available, pulling latest changes..."
-      git pull origin master
+      git pull origin main
       print_status "Dotfiles updated successfully"
     else
       print_status "Dotfiles already up to date"
