@@ -254,18 +254,8 @@ init_stow() {
   # Apply stow for each package
   print_info "Applying stow configurations..."
   
-  # Stow zsh configuration
-  if [ -d "zshrc" ]; then
-    stow -t ~ zshrc
-    print_status "ZSH configuration stowed"
-  fi
-  
-  # Stow neovim configuration  
-  if [ -d "nvim" ]; then
-    stow nvim
-    print_status "Neovim configuration stowed"
-  fi
-  
+  stow .
+
   print_status "Stow initialization completed"
 }
 
@@ -275,6 +265,12 @@ main() {
   check_arch
 
   print_header " Starting Dotfiles Setup 🚀"
+
+  if ! command -v git &>/dev/null; then
+    print_info "Installing git..."
+    install_packages git
+    print_status "Git installed"
+  fi
 
   if ! dir_exists "$HOME/dotfiles"; then
     git clone git@github.com:Denos-soneD/dotfiles.git "$HOME/dotfiles"
