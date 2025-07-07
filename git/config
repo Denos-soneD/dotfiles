@@ -1,10 +1,8 @@
 [user]
     name = Denos-soneD
     email = mateo.christol@gmail.com
-    signingkey = E3DFEC736900FDE2
 
 [commit]
-    gpgSign = true
     template = ~/.config/git/template
     verbose = true  # add more context to commit messages
 
@@ -48,7 +46,6 @@
     autoSetupRemote = true  # easier to push new branches
     default = current  # push only current branch by default
     followTags = true  # push also tags
-    gpgSign = false  # my remotes doesn't support sign pushes
 
 [pull]
     rebase = true
