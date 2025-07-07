@@ -278,7 +278,7 @@ install_atuin() {
     print_status "Atuin is already installed"
     return
   fi  
-  
+
   # Install Atuin based on OS
   case "$OS" in
     arch)
@@ -436,6 +436,68 @@ install_ssh() {
   print_status "SSH setup completed"
 }
 
+# Git Setup
+install_git() {
+  print_header "Setting up Git Configuration"
+
+  # Install Git based on OS
+  case "$OS" in
+    arch)
+      install_packages git
+      ;;
+    ubuntu)
+      install_packages git
+      ;;
+    fedora)
+      install_packages git
+      ;;
+    centos)
+      install_packages git
+      ;;
+    macos)
+      install_packages git
+      ;;
+  esac
+  print_info "Git installed successfully"
+  
+  print_info "Installing diff-so-fancy..."
+  if ! command -v diff-so-fancy &>/dev/null; then
+    case "$OS" in
+      arch)
+        install_packages diff-so-fancy
+        ;;
+      ubuntu)
+        install_packages diff-so-fancy
+        ;;
+      fedora)
+        install_packages diff-so-fancy
+        ;;
+      centos)
+        install_packages diff-so-fancy
+        ;;
+      macos)
+        if ! command -v brew &>/dev/null; then
+          print_info "Installing Homebrew..."
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install diff-so-fancy
+        ;;
+      *)
+        print_error "diff-so-fancy installation not supported for this OS"
+        exit 1
+        ;;
+    esac
+    print_status "diff-so-fancy installed successfully"
+  else
+    print_status "diff-so-fancy is already installed"
+  fi
+
+  print_info "Git Initialization completed"
+}
+  
+
+
+
 # Initialize stow
 init_stow() {
   print_header "Initializing Stow for Dotfiles Management"
@@ -505,6 +567,7 @@ main() {
   install_ssh
   install_tmux
   install_atuin
+  install_git
   init_stow
 
   print_status "Dotfiles setup completed successfully!"
