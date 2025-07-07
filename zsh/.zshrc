@@ -37,7 +37,7 @@ source $ZSH/oh-my-zsh.sh
 
 bindkey -e
 bindkey '^[w' kill-region
-bindkey "${terminfo[kcuu1]}" fzf-history-widget
+# bindkey "${terminfo[kcuu1]}" fzf-history-widget
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
@@ -71,3 +71,7 @@ case "$(uname -s)" in
 		alias update='HOMEBREW_NO_AUTO_UPDATE=1 brew update && NONINTERACTIVE=1 brew upgrade --force'
 		;;
 esac
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"

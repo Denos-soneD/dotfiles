@@ -235,6 +235,79 @@ install_zsh() {
   echo export ZDOTDIR="$HOME/.config/zsh" >>"$HOME/.zshenv"
 }
 
+# Tmux Setup
+install_tmux() {
+  print_header "Setting up Tmux Environment"
+
+  # Install Tmux based on OS
+  case "$OS" in
+    arch)
+      install_packages tmux
+      ;;
+    ubuntu)
+      install_packages tmux
+      ;;
+    fedora)
+      install_packages tmux
+      ;;
+    centos)
+      install_packages tmux
+      ;;
+    macos)
+      install_packages tmux
+      ;;
+  esac
+
+  # Install TPM (Tmux Plugin Manager)
+  if dir_exists "$HOME/.tmux/plugins/tpm"; then
+    print_status "TPM is already installed"
+  else
+    print_info "Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    print_status "TPM installed successfully"
+  fi
+
+  print_info "To install plugins, press 'prefix + I' inside Tmux"
+}
+
+install_atuin() {
+  print_header "Setting up Atuin - Command History Manager"
+
+  # Check if Atuin is already installed
+  if command -v atuin &>/dev/null; then
+    print_status "Atuin is already installed"
+    return
+  fi  
+  
+  # Install Atuin based on OS
+  case "$OS" in
+    arch)
+      install_packages atuin
+      ;;
+    ubuntu)
+      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+      ;;
+    fedora)
+      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+      ;;
+    centos)
+      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+      ;;
+    macos)
+      install_packages atuin
+      ;;
+  esac
+
+  # Initialize Atuin
+  if ! command -v atuin &>/dev/null; then
+    print_error "Atuin installation failed"
+    exit 1
+  fi
+
+  print_info "Initializing Atuin..."
+  atuin login
+}
+
 # Neovim Installation
 install_neovim() {
   print_header "Setting up Neovim Configuration"
@@ -430,6 +503,8 @@ main() {
   install_zsh
   install_neovim
   install_ssh
+  install_tmux
+  install_atuin
   init_stow
 
   print_status "Dotfiles setup completed successfully!"
