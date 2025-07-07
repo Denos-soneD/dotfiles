@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 🎨 Dotfiles Environment Setup - Automated Installation Script
+# 🎨 Dotfiles Environment Setup - Multi-OS Automated Installation Script
 # Made with ❤️ by Denos-soneD
+# Supports: Arch Linux, Ubuntu/Debian, Fedora, CentOS/RHEL, macOS
 
 set -e # Exit on any error
 
@@ -43,18 +44,60 @@ check_root() {
   fi
 }
 
-# Check if on Arch Linux
-check_arch() {
-  if ! command -v pacman &>/dev/null; then
-    print_error "This script is designed for Arch Linux"
+# Detect operating system
+detect_os() {
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if command -v pacman &>/dev/null; then
+      OS="arch"
+      print_status "Arch Linux detected"
+    elif command -v apt &>/dev/null; then
+      OS="ubuntu"
+      print_status "Ubuntu/Debian detected"
+    elif command -v dnf &>/dev/null; then
+      OS="fedora"
+      print_status "Fedora detected"
+    elif command -v yum &>/dev/null; then
+      OS="centos"
+      print_status "CentOS/RHEL detected"
+    else
+      print_error "Unsupported Linux distribution"
+      exit 1
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="macos"
+    print_status "macOS detected"
+  else
+    print_error "Unsupported operating system: $OSTYPE"
     exit 1
   fi
-  print_status "Arch Linux detected"
 }
 
 # Check if package is installed
 is_package_installed() {
-  pacman -Q "$1" &>/dev/null
+  case "$OS" in
+    arch)
+      pacman -Q "$1" &>/dev/null
+      ;;
+    ubuntu)
+      dpkg -l "$1" &>/dev/null
+      ;;
+    fedora)
+      dnf list installed "$1" &>/dev/null
+      ;;
+    centos)
+      yum list installed "$1" &>/dev/null
+      ;;
+    macos)
+      if command -v brew &>/dev/null; then
+        brew list "$1" &>/dev/null
+      else
+        return 1
+      fi
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
 # Check if directory exists
@@ -62,7 +105,7 @@ dir_exists() {
   [ -d "$1" ]
 }
 
-# Install packages with pacman
+# Install packages based on OS
 install_packages() {
   local packages=("$@")
   local to_install=()
@@ -77,7 +120,34 @@ install_packages() {
 
   if [ ${#to_install[@]} -gt 0 ]; then
     print_info "Installing packages: ${to_install[*]}"
-    sudo pacman -S --needed --noconfirm "${to_install[@]}"
+    
+    case "$OS" in
+      arch)
+        sudo pacman -S --needed --noconfirm "${to_install[@]}"
+        ;;
+      ubuntu)
+        sudo apt update
+        sudo apt install -y "${to_install[@]}"
+        ;;
+      fedora)
+        sudo dnf install -y "${to_install[@]}"
+        ;;
+      centos)
+        sudo yum install -y "${to_install[@]}"
+        ;;
+      macos)
+        if ! command -v brew &>/dev/null; then
+          print_info "Installing Homebrew..."
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install "${to_install[@]}"
+        ;;
+      *)
+        print_error "Package installation not supported for this OS"
+        exit 1
+        ;;
+    esac
+    
     print_status "Packages installed successfully"
   fi
 }
@@ -86,8 +156,24 @@ install_packages() {
 install_zsh() {
   print_header "Setting up ZSH Environment"
 
-  # Install ZSH and dependencies
-  install_packages zsh fzf
+  # Install ZSH and dependencies based on OS
+  case "$OS" in
+    arch)
+      install_packages zsh fzf
+      ;;
+    ubuntu)
+      install_packages zsh fzf
+      ;;
+    fedora)
+      install_packages zsh fzf
+      ;;
+    centos)
+      install_packages zsh fzf
+      ;;
+    macos)
+      install_packages zsh fzf
+      ;;
+  esac
 
   # Install Oh My Zsh
   if dir_exists "$HOME/.oh-my-zsh"; then
@@ -153,8 +239,24 @@ install_zsh() {
 install_neovim() {
   print_header "Setting up Neovim Configuration"
 
-  # Install Neovim and dependencies
-  install_packages neovim luarocks git
+  # Install Neovim and dependencies based on OS
+  case "$OS" in
+    arch)
+      install_packages neovim luarocks git
+      ;;
+    ubuntu)
+      install_packages neovim luarocks git
+      ;;
+    fedora)
+      install_packages neovim luarocks git
+      ;;
+    centos)
+      install_packages neovim luarocks git
+      ;;
+    macos)
+      install_packages neovim luarocks git
+      ;;
+  esac
 
   print_info "First launch of Neovim will install plugins automatically"
 }
@@ -163,8 +265,25 @@ install_neovim() {
 install_ssh() {
   print_header "Setting up SSH Configuration"
 
-  # Install OpenSSH
-  install_packages openssh
+  # Install OpenSSH based on OS
+  case "$OS" in
+    arch)
+      install_packages openssh
+      ;;
+    ubuntu)
+      install_packages openssh-client openssh-server
+      ;;
+    fedora)
+      install_packages openssh openssh-server
+      ;;
+    centos)
+      install_packages openssh openssh-server
+      ;;
+    macos)
+      # SSH is pre-installed on macOS
+      print_status "SSH is pre-installed on macOS"
+      ;;
+  esac
 
   # Create SSH directory if it doesn't exist
   if ! dir_exists "$HOME/.ssh"; then
@@ -201,22 +320,37 @@ install_ssh() {
 
   print_status "SSH permissions set correctly"
 
-  # Enable SSH service
-  if systemctl is-enabled sshd.service &>/dev/null; then
-    print_status "SSH service already enabled"
-  else
-    print_info "Enabling SSH service..."
-    sudo systemctl enable sshd.service
-    print_status "SSH service enabled"
-  fi
+  # Enable and start SSH service (Linux only)
+  if [[ "$OS" != "macos" ]]; then
+    local ssh_service=""
+    case "$OS" in
+      arch|ubuntu|fedora)
+        ssh_service="sshd"
+        ;;
+      centos)
+        ssh_service="sshd"
+        ;;
+    esac
 
-  # Start SSH service
-  if systemctl is-active sshd.service &>/dev/null; then
-    print_status "SSH service already running"
-  else
-    print_info "Starting SSH service..."
-    sudo systemctl start sshd.service
-    print_status "SSH service started"
+    if [ -n "$ssh_service" ]; then
+      # Enable SSH service
+      if systemctl is-enabled "$ssh_service.service" &>/dev/null; then
+        print_status "SSH service already enabled"
+      else
+        print_info "Enabling SSH service..."
+        sudo systemctl enable "$ssh_service.service"
+        print_status "SSH service enabled"
+      fi
+
+      # Start SSH service
+      if systemctl is-active "$ssh_service.service" &>/dev/null; then
+        print_status "SSH service already running"
+      else
+        print_info "Starting SSH service..."
+        sudo systemctl start "$ssh_service.service"
+        print_status "SSH service started"
+      fi
+    fi
   fi
 
   # Display public keys
@@ -232,9 +366,26 @@ install_ssh() {
 # Initialize stow
 init_stow() {
   print_header "Initializing Stow for Dotfiles Management"
+  
   if ! command -v stow &>/dev/null; then
     print_info "Installing stow..."
-    install_packages stow
+    case "$OS" in
+      arch)
+        install_packages stow
+        ;;
+      ubuntu)
+        install_packages stow
+        ;;
+      fedora)
+        install_packages stow
+        ;;
+      centos)
+        install_packages stow
+        ;;
+      macos)
+        install_packages stow
+        ;;
+    esac
     print_status "Stow installed"
   fi
 
@@ -251,7 +402,7 @@ init_stow() {
 # Main function
 main() {
   check_root
-  check_arch
+  detect_os
 
   print_header " Starting Dotfiles Setup 🚀"
 
