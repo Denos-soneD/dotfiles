@@ -6,8 +6,7 @@
 set -e
 
 # Configuration
-TMUX_CONFIG_SOURCE="$(dirname "$0")/.tmux.conf"
-TMUX_CONFIG_TARGET="$HOME/.tmux.conf"
+TMUX_CONFIG="$HOME/.config/tmux/.tmux.conf"
 TMUX_PLUGINS_DIR="$HOME/.tmux/plugins"
 
 # Colors
@@ -90,23 +89,6 @@ main() {
     
     print_success "Prerequisites OK (tmux $(tmux -V | cut -d' ' -f2), git $(git --version | cut -d' ' -f3))"
     
-    # Step 2: Tmux configuration
-    print_step "Configuring tmux..."
-    
-    if [ -f "$TMUX_CONFIG_SOURCE" ]; then
-        # Backup old config
-        if [ -f "$TMUX_CONFIG_TARGET" ]; then
-            cp "$TMUX_CONFIG_TARGET" "$TMUX_CONFIG_TARGET.backup.$(date +%Y%m%d_%H%M%S)"
-            print_warning "Old configuration backed up"
-        fi
-        
-        cp "$TMUX_CONFIG_SOURCE" "$TMUX_CONFIG_TARGET"
-        print_success "Tmux configuration installed"
-    else
-        print_error "Configuration file not found: $TMUX_CONFIG_SOURCE"
-        exit 1
-    fi
-    
     # Step 3: Plugins directory
     print_step "Creating plugins directory..."
     mkdir -p "$TMUX_PLUGINS_DIR"
@@ -130,25 +112,8 @@ main() {
     
     print_success "All plugins installed!"
     
-    # Step 5: Configuration test
-    print_step "Testing configuration..."
-    
-    if tmux -f "$TMUX_CONFIG_TARGET" list-keys >/dev/null 2>&1; then
-        print_success "Tmux configuration is valid"
-    else
-        print_error "Error in tmux configuration"
-        exit 1
-    fi
-    
-    print_step "Starting tmux with your new configuration..."
-    
     # Kill any existing tmux sessions
     tmux kill-server 2>/dev/null || true
-    sleep 1
-    
-    # Start tmux and run the instructions script in the first pane
-    cd "$HOME"
-    tmux new-session
 }
 
 # Error handling
