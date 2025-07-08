@@ -619,6 +619,8 @@ main() {
 
   print_status "Dotfiles setup completed successfully!"
   source ~/.config/zsh/.zshrc
+
+  ./setup-tmux.sh
 }
 
 # Run main function
