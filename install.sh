@@ -546,7 +546,7 @@ install_git() {
 
 
 # Initialize stow
-init_stow() {
+install_stow() {
   print_header "Initializing Stow for Dotfiles Management"
   
   if ! command -v stow &>/dev/null; then
@@ -570,8 +570,6 @@ init_stow() {
     esac
     print_status "Stow installed"
   fi
-
-  
 }
 
 # Main function
@@ -582,11 +580,11 @@ main() {
 
   print_header " Starting Dotfiles Setup 🚀"
 
-  if ! command -v git &>/dev/null; then
-    print_info "Installing git..."
-    install_packages git
-    print_status "Git installed"
-  fi
+  install_stow
+
+  install_git
+
+  install_ssh
 
   if ! dir_exists "$HOME/dotfiles"; then
     git clone git@github.com:Denos-soneD/dotfiles.git "$HOME/dotfiles"
@@ -603,13 +601,12 @@ main() {
     fi
   fi
 
-  init_stow
+  
   install_zsh
   install_neovim
-  install_ssh
   install_tmux
   install_atuin
-  install_git
+  
   
   cd "$HOME/dotfiles"
 
