@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # 🎨 Dotfiles Environment Setup - Multi-OS Automated Installation Script
 # Made with ❤️ by Denos-soneD
@@ -79,7 +79,7 @@ is_package_installed() {
       pacman -Q "$1" &>/dev/null
       ;;
     ubuntu)
-      dpkg -l "$1" &>/dev/null
+      dpkg -l "$1" 2>/dev/null | grep -q "^ii"
       ;;
     fedora)
       dnf list installed "$1" &>/dev/null
@@ -103,6 +103,23 @@ is_package_installed() {
 # Check if directory exists
 dir_exists() {
   [ -d "$1" ]
+}
+
+# Setup system locale
+setup_locale() {
+  if [[ "$OS" == "ubuntu" ]]; then
+    print_header "Setting up System Locale"
+    
+    # Check if en_US.UTF-8 locale is available
+    if ! locale -a | grep -q "en_US.utf8"; then
+      print_info "Generating en_US.UTF-8 locale..."
+      sudo locale-gen en_US.UTF-8
+      sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+      print_status "Locale configured"
+    else
+      print_status "en_US.UTF-8 locale already available"
+    fi
+  fi
 }
 
 # Install packages based on OS
@@ -232,7 +249,20 @@ install_zsh() {
     print_status "Pure theme installed"
   fi
 
-  echo export ZDOTDIR="$HOME/.config/zsh" >>"$HOME/.zshenv"
+  # Create ZSH config directory
+  if ! dir_exists "$HOME/.config/zsh"; then
+    print_info "Creating ZSH config directory..."
+    mkdir -p "$HOME/.config/zsh"
+    print_status "ZSH config directory created"
+  fi
+
+  # Set ZDOTDIR environment variable
+  if ! grep -q "ZDOTDIR=" "$HOME/.zshenv" 2>/dev/null; then
+    echo 'export ZDOTDIR="$HOME/.config/zsh"' >>"$HOME/.zshenv"
+    print_status "ZDOTDIR set in .zshenv"
+  fi
+
+  stow zsh
 }
 
 # Tmux Setup
@@ -272,7 +302,7 @@ install_tmux() {
 
 install_atuin() {
   print_header "Setting up Atuin - Command History Manager"
-
+  rm -rf "$HOME/.config/atuin" "$HOME/.config/atuin/config.toml" 2>/dev/null || true
   # Check if Atuin is already installed
   if command -v atuin &>/dev/null; then
     print_status "Atuin is already installed"
@@ -304,8 +334,10 @@ install_atuin() {
     exit 1
   fi
 
+  source "$HOME/.config/zsh/.zshrc"
   print_info "Initializing Atuin..."
   atuin login
+  rm -rf "$HOME/.config/atuin" "$HOME/.config/atuin/config.toml" 2>/dev/null || true
 }
 
 # Neovim Installation
@@ -397,15 +429,22 @@ install_ssh() {
   if [[ "$OS" != "macos" ]]; then
     local ssh_service=""
     case "$OS" in
-      arch|ubuntu|fedora)
+      arch|fedora|centos)
         ssh_service="sshd"
         ;;
-      centos)
-        ssh_service="sshd"
+      ubuntu)
+        ssh_service="ssh"
         ;;
     esac
 
     if [ -n "$ssh_service" ]; then
+      # Check if service exists first
+      if ! systemctl list-unit-files | grep -q "^$ssh_service.service"; then
+        print_info "SSH service ($ssh_service.service) not found on this system"
+        print_info "SSH server may not be installed or may use a different service name"
+        return
+      fi
+
       # Enable SSH service
       if systemctl is-enabled "$ssh_service.service" &>/dev/null; then
         print_status "SSH service already enabled"
@@ -467,7 +506,15 @@ install_git() {
         install_packages diff-so-fancy
         ;;
       ubuntu)
-        install_packages diff-so-fancy
+        # diff-so-fancy is not available in Ubuntu apt repos, install via npm or direct download
+        if command -v npm &>/dev/null; then
+          print_info "Installing diff-so-fancy via npm..."
+          sudo npm install -g diff-so-fancy
+        else
+          print_info "Installing diff-so-fancy via direct download..."
+          sudo curl -fsSL https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy -o /usr/local/bin/diff-so-fancy
+          sudo chmod +x /usr/local/bin/diff-so-fancy
+        fi
         ;;
       fedora)
         install_packages diff-so-fancy
@@ -524,20 +571,14 @@ init_stow() {
     print_status "Stow installed"
   fi
 
-  cd "$HOME/dotfiles"
-
-  # Apply stow for each package
-  print_info "Applying stow configurations..."
-
-  stow .
-
-  print_status "Stow initialization completed"
+  
 }
 
 # Main function
 main() {
   check_root
   detect_os
+  setup_locale
 
   print_header " Starting Dotfiles Setup 🚀"
 
@@ -562,16 +603,25 @@ main() {
     fi
   fi
 
+  init_stow
   install_zsh
   install_neovim
   install_ssh
   install_tmux
   install_atuin
   install_git
-  init_stow
+  
+  cd "$HOME/dotfiles"
+
+  # Apply stow for each package
+  print_info "Applying stow configurations..."
+
+  stow .
+
+  print_status "Stow initialization completed"
 
   print_status "Dotfiles setup completed successfully!"
-  print_info "Please restart your shell or run: source ~/.config/zsh/.zshrc"
+  source ~/.config/zsh/.zshrc
 }
 
 # Run main function
