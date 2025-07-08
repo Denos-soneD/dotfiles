@@ -107,19 +107,42 @@ dir_exists() {
 
 # Setup system locale
 setup_locale() {
-  if [[ "$OS" == "ubuntu" ]]; then
-    print_header "Setting up System Locale"
-    
-    # Check if en_US.UTF-8 locale is available
-    if ! locale -a | grep -q "en_US.utf8"; then
-      print_info "Generating en_US.UTF-8 locale..."
-      sudo locale-gen en_US.UTF-8
-      sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-      print_status "Locale configured"
-    else
-      print_status "en_US.UTF-8 locale already available"
-    fi
-  fi
+  case "$OS" in
+    arch)
+      print_header "Setting up System Locale"
+      
+      # Check if en_US.UTF-8 locale is available
+      if ! locale -a | grep -q "en_US.utf8"; then
+        print_info "Generating en_US.UTF-8 locale..."
+        
+        # Uncomment en_US.UTF-8 in /etc/locale.gen
+        sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+        
+        # Generate locale
+        sudo locale-gen
+        
+        # Set system locale
+        echo 'LANG=en_US.UTF-8' | sudo tee /etc/locale.conf
+        
+        print_status "Locale configured"
+      else
+        print_status "en_US.UTF-8 locale already available"
+      fi
+      ;;
+    ubuntu)
+      print_header "Setting up System Locale"
+      
+      # Check if en_US.UTF-8 locale is available
+      if ! locale -a | grep -q "en_US.utf8"; then
+        print_info "Generating en_US.UTF-8 locale..."
+        sudo locale-gen en_US.UTF-8
+        sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+        print_status "Locale configured"
+      else
+        print_status "en_US.UTF-8 locale already available"
+      fi
+      ;;
+  esac
 }
 
 # Install packages based on OS
@@ -261,8 +284,6 @@ install_zsh() {
     echo 'export ZDOTDIR="$HOME/.config/zsh"' >>"$HOME/.zshenv"
     print_status "ZDOTDIR set in .zshenv"
   fi
-
-  stow zsh
 }
 
 # Tmux Setup
@@ -541,9 +562,6 @@ install_git() {
 
   print_info "Git Initialization completed"
 }
-  
-
-
 
 # Initialize stow
 install_stow() {
@@ -581,9 +599,7 @@ main() {
   print_header " Starting Dotfiles Setup 🚀"
 
   install_stow
-
   install_git
-
   install_ssh
 
   if ! dir_exists "$HOME/dotfiles"; then
@@ -601,24 +617,43 @@ main() {
     fi
   fi
 
+  print_info "Applying stow configurations..."
+  rm -rf "$HOME/.config/zsh" "$HOME/.config/nvim" "$HOME/.config/tmux" "$HOME/.config/atuin" "$HOME/.config/git" "$HOME/.config/ssh" 2>/dev/null || true
+  cd "$HOME/dotfiles"
+  stow .
   
   install_zsh
   install_neovim
   install_tmux
   install_atuin
+
+  if [ "$SHELL" != "/bin/zsh" ] && [ "$SHELL" != "$(which zsh)" ]; then
+  print_info "Changing default shell to zsh..."
   
+  # Get zsh path
+  local zsh_path=$(which zsh)
   
-  cd "$HOME/dotfiles"
-
-  # Apply stow for each package
-  print_info "Applying stow configurations..."
-
-  stow .
-
-  print_status "Stow initialization completed"
-
-  print_status "Dotfiles setup completed successfully!"
+  # Check if zsh is in /etc/shells
+  if ! grep -q "^$zsh_path$" /etc/shells; then
+    print_info "Adding zsh to /etc/shells..."
+    echo "$zsh_path" | sudo tee -a /etc/shells
+  fi
+  
+  # Try common zsh paths
+  if chsh -s /bin/zsh 2>/dev/null; then
+    print_status "Shell changed to zsh (/bin/zsh)"
+  elif chsh -s "$zsh_path" 2>/dev/null; then
+    print_status "Shell changed to zsh ($zsh_path)"
+  else
+    print_error "Failed to change shell to zsh"
+    print_info "You may need to manually run: chsh -s $(which zsh)"
+  fi
+  else
+    print_status "Shell is already set to zsh"
+  fi
   source ~/.config/zsh/.zshrc
+  print_status "Dotfiles setup completed successfully!"
+  
 }
 
 # Run main function

@@ -76,6 +76,4 @@ case "$(uname -s)" in
 		;;
 esac
 
-. "$HOME/.atuin/bin/env"
-
 eval "$(atuin init zsh)"
