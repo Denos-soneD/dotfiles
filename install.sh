@@ -323,42 +323,53 @@ install_tmux() {
 
 install_atuin() {
   print_header "Setting up Atuin - Command History Manager"
+  
+  # Clean up any existing config
   rm -rf "$HOME/.config/atuin" "$HOME/.config/atuin/config.toml" 2>/dev/null || true
+  
   # Check if Atuin is already installed
   if command -v atuin &>/dev/null; then
     print_status "Atuin is already installed"
-    return
-  fi  
-
-  # Install Atuin based on OS
-  case "$OS" in
-    arch)
-      install_packages atuin
-      ;;
-    ubuntu)
-      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-      ;;
-    fedora)
-      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-      ;;
-    centos)
-      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-      ;;
-    macos)
-      install_packages atuin
-      ;;
-  esac
-
-  # Initialize Atuin
-  if ! command -v atuin &>/dev/null; then
-    print_error "Atuin installation failed"
-    exit 1
+  else
+    # Install Atuin based on OS
+    case "$OS" in
+      arch)
+        install_packages atuin
+        ;;
+      ubuntu|debian)
+        print_info "Installing Atuin via curl..."
+        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+        # Add to PATH for current session
+        export PATH="$HOME/.atuin/bin:$PATH"
+        ;;
+      fedora)
+        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+        export PATH="$HOME/.atuin/bin:$PATH"
+        ;;
+      centos)
+        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+        export PATH="$HOME/.atuin/bin:$PATH"
+        ;;
+      macos)
+        install_packages atuin
+        ;;
+    esac
+    print_status "Atuin installed successfully"
   fi
 
-  source "$HOME/.config/zsh/.zshrc"
-  print_info "Initializing Atuin..."
-  atuin login
-  rm -rf "$HOME/.config/atuin" "$HOME/.config/atuin/config.toml" 2>/dev/null || true
+  # Verify installation
+  if ! command -v atuin &>/dev/null && [ -f "$HOME/.atuin/bin/atuin" ]; then
+    export PATH="$HOME/.atuin/bin:$PATH"
+  fi
+
+  if ! command -v atuin &>/dev/null; then
+    print_error "Atuin installation failed - command not found"
+    return 1
+  fi
+
+  print_info "Atuin installation completed"
+  print_info "After setup, run 'atuin register' to create an account or 'atuin login' if you have one"
+  print_info "Atuin will be configured when you first start your new shell"
 }
 
 # Neovim Installation
@@ -532,9 +543,17 @@ install_git() {
           print_info "Installing diff-so-fancy via npm..."
           sudo npm install -g diff-so-fancy
         else
-          print_info "Installing diff-so-fancy via direct download..."
-          sudo curl -fsSL https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy -o /usr/local/bin/diff-so-fancy
-          sudo chmod +x /usr/local/bin/diff-so-fancy
+          print_info "Installing diff-so-fancy via snap..."
+          if ! command -v snap &>/dev/null; then
+            print_info "Installing snapd..."
+            sudo apt update
+            sudo apt install -y snapd
+          fi
+          print_info "Starting and enabling snapd service..."
+          sudo systemctl start snapd
+          sudo systemctl enable snapd
+          print_info "Installing diff-so-fancy via snap..."
+          sudo snap install diff-so-fancy
         fi
         ;;
       fedora)

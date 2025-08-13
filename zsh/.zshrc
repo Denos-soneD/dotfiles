@@ -9,6 +9,7 @@ export LC_ALL=en_US.UTF-8
 export EDITOR="nvim"
 export GIT_EDITOR="nvim"
 export VISUAL="nvim"
+export PATH="$HOME/.atuin/bin:$PATH"
 
 
 # ~~~~~~~~~~~~~ PATH ~~~~~~~~~~~~~~~~
