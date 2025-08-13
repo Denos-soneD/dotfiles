@@ -23,10 +23,6 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME=""
 
-fpath+=($HOME/.oh-my-zsh/custom/pure)
-autoload -U promptinit; promptinit
-prompt pure
-
 
 # ~~~~~~~~~~~~~ PLUGINS ~~~~~~~~~~~~~
 
@@ -34,6 +30,14 @@ prompt pure
 plugins=(git fzf fzf-tab zsh-syntax-highlighting zsh-completions zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
+
+
+# ~~~~~~~~~~~~~ PURE PROMPT ~~~~~~~~~
+
+
+fpath+=($HOME/.oh-my-zsh/custom/pure)
+autoload -U promptinit; promptinit
+prompt pure
 
 
 # ~~~~~~~~~~~~~ KEYBIND ~~~~~~~~~~~~~
