@@ -582,6 +582,82 @@ install_git() {
   print_info "Git Initialization completed"
 }
 
+# OpenCode Setup
+install_opencode() {
+  print_header "Setting up OpenCode - AI Coding Agent"
+  
+  # Check if OpenCode is already installed
+  if command -v opencode &>/dev/null; then
+    print_status "OpenCode is already installed"
+    return
+  fi
+  
+  # Install OpenCode based on OS
+  case "$OS" in
+    arch)
+      print_info "Installing OpenCode via AUR..."
+      if command -v paru &>/dev/null; then
+        paru -S --needed --noconfirm opencode-bin
+      elif command -v yay &>/dev/null; then
+        yay -S --needed --noconfirm opencode-bin
+      else
+        print_info "No AUR helper found, installing via npm..."
+        if ! command -v npm &>/dev/null; then
+          install_packages npm
+        fi
+        sudo npm install -g opencode-ai
+      fi
+      ;;
+    ubuntu|debian)
+      print_info "Installing OpenCode via npm..."
+      if ! command -v npm &>/dev/null; then
+        print_info "Installing Node.js and npm..."
+        install_packages nodejs npm
+      fi
+      sudo npm install -g opencode-ai
+      ;;
+    fedora)
+      print_info "Installing OpenCode via npm..."
+      if ! command -v npm &>/dev/null; then
+        print_info "Installing Node.js and npm..."
+        install_packages nodejs npm
+      fi
+      sudo npm install -g opencode-ai
+      ;;
+    centos)
+      print_info "Installing OpenCode via npm..."
+      if ! command -v npm &>/dev/null; then
+        print_info "Installing Node.js and npm..."
+        install_packages nodejs npm
+      fi
+      sudo npm install -g opencode-ai
+      ;;
+    macos)
+      print_info "Installing OpenCode via Homebrew..."
+      if ! command -v brew &>/dev/null; then
+        print_info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      fi
+      brew tap sst/tap
+      brew install sst/tap/opencode
+      ;;
+    *)
+      print_error "OpenCode installation not supported for this OS"
+      return 1
+      ;;
+  esac
+  
+  # Verify installation
+  if command -v opencode &>/dev/null; then
+    print_status "OpenCode installed successfully"
+    print_info "Run 'opencode auth login' to configure your API credentials"
+    print_info "Navigate to your project and run 'opencode' to get started"
+  else
+    print_error "OpenCode installation failed - command not found"
+    return 1
+  fi
+}
+
 # Initialize stow
 install_stow() {
   print_header "Initializing Stow for Dotfiles Management"
@@ -645,6 +721,7 @@ main() {
   install_neovim
   install_tmux
   install_atuin
+  install_opencode
 
   if [ "$SHELL" != "/bin/zsh" ] && [ "$SHELL" != "$(which zsh)" ]; then
   print_info "Changing default shell to zsh..."

@@ -36,6 +36,17 @@ dotfiles
 │   │       └── example.lua
 │   ├── .neoconf.json
 │   └── stylua.toml
+├── opencode
+│   ├── agent
+│   │   ├── ai-research.md
+│   │   ├── explain.md
+│   │   ├── prompt-engineer.md
+│   │   ├── quickfix.md
+│   │   ├── refactor.md
+│   │   ├── review.md
+│   │   └── test-writer.md
+│   ├── .gitignore
+│   └── package.json
 ├── README.MD
 ├── ssh
 │   └── ssh-config
