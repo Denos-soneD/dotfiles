@@ -1,6 +1,7 @@
 ---
 description: Regulatory compliance auditing (GDPR, SOC2, ISO27001, HIPAA)
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.1
 tools:
   read: true

@@ -1,6 +1,7 @@
 ---
 description: Creates comprehensive unit and integration tests
 mode: subagent
+model: github-copilot/claude-sonnet-4.5
 temperature: 0.2
 tools:
   read: true

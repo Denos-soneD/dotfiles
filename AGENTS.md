@@ -1,38 +1,28 @@
-# Agent Guidelines for Dotfiles Repository
+# AGENTS
 
-## Build/Test Commands
-- Deploy configs: `stow .` (from repo root, symlinks to `~/.config`)
-- Install/update environment: `./install.sh` (multi-OS automated setup)
-- Setup tmux plugins: `./setup-tmux.sh`
-- Test configs: `source ~/.config/zsh/.zshrc` (zsh), `nvim` (auto-installs plugins), `tmux source ~/.config/tmux/.tmux.conf` (tmux)
-- Format Lua: `stylua nvim/` (2-space indent, 120 col width)
-- Verify stow links: `stow -n .` (dry-run to preview changes)
+- Build / install
+  - `cd opencode && npm ci` — install JS deps used by tools/plugins
+  - `./install.sh` — repo-level installer for dotfiles (where applicable)
 
-## Code Style
+- Lint / format / test commands
+  - Format Lua: `stylua .` (repo contains `stylua.toml`)
+  - Lint Lua (if installed): `luacheck .`
+  - Run JS tests (if added): `cd opencode && npm test` and single test: `npm test -- -t "pattern"`
+  - Common single-test patterns:
+    - Python/pytest: `pytest path/to/test.py::test_name -q`
+    - Go: `go test ./... -run TestName`
+    - Rust: `cargo test test_name`
 
-### Shell Scripts (Bash/Zsh)
-- Shebang: `#!/bin/zsh` or `#!/bin/bash` (prefer zsh for install.sh)
-- Error handling: Always use `set -e` at script start
-- Variables: UPPERCASE for globals/env, lowercase for locals
-- Functions: `snake_case()` with descriptive names (`install_packages`, `print_status`)
-- Output: Use color functions (`print_status`, `print_error`, `print_info`, `print_header`)
-- Safety checks: Use `is_package_installed()`, `dir_exists()` before operations
-- OS detection: Support arch, ubuntu, fedora, centos, macos in case statements
-- Idempotency: All operations must be safe to run multiple times
-- Directory checks: Always verify paths exist before operations
+- Style / code guidelines (for agents)
+  - Formatting: run `stylua` on Lua files before committing; keep `stylua.toml` settings.
+  - Imports / requires: group standard, external, then internal requires; one blank line between groups.
+  - Naming: use `snake_case` for Lua functions/variables, `PascalCase` for module/file names where appropriate.
+  - Types & annotations: Lua is dynamic — prefer clear variable names and local scoping (`local`) to avoid globals; add inline comments for complex return types.
+  - Error handling: return `nil, err` from functions that can fail; callers should check and propagate errors; use `pcall`/`xpcall` only when isolating plugin failures.
+  - Small functions: keep functions small and single-responsibility; prefer explicit returns over side-effects.
+  - Commits & edits: be surgical — change only necessary files and include a short, descriptive commit message.
 
-### Lua (Neovim - LazyVim based)
-- Indentation: 2 spaces (see nvim/stylua.toml)
-- Line width: 120 characters max
-- Style: Minimal, rely on LazyVim defaults
-- Plugins: Each in `nvim/lua/plugins/*.lua` as return table (e.g., `return { "plugin/name", lazy = false }`)
-- Config: Place in `nvim/lua/config/*.lua` (autocmds, keymaps, options)
-- Lazy loading: Use `lazy = false` only when needed (navigation, core functionality)
-- Comments: Only when clarifying non-obvious logic
-- Imports: Use `require("module")`, avoid unnecessary nesting
-- Keymaps: Use `vim.keymap.set()` with descriptive `desc` field
+- Tooling / rules notes
+  - No `.cursor` or Copilot instruction files were found; no extra Cursor/Copilot rules to apply.
 
-## File Structure
-- Configs live in: `{nvim,zsh,tmux,git,ssh,atuin}/` directories
-- Stow targets: `~/.config/{nvim,zsh,tmux,git,atuin}` and `~/.ssh/config`
-- Scripts: `install.sh` (main setup), `setup-tmux.sh` (tmux plugins)
+If you add tests or other languages, update this AGENTS.md with exact test runner commands and any new linters.

@@ -1,6 +1,7 @@
 ---
 description: Explains complex code in simple terms with diagrams
 mode: subagent
+model: github-copilot/claude-sonnet-4.5
 temperature: 0.3
 tools:
   read: true

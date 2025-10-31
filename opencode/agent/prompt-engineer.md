@@ -1,6 +1,7 @@
 ---
 description: Helps craft effective prompts for AI interactions
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.4
 tools:
   read: false

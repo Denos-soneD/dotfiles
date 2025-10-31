@@ -1,6 +1,7 @@
 ---
 description: Handles code migrations and version upgrades
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.2
 tools:
   read: true

@@ -1,6 +1,7 @@
 ---
 description: Cloud infrastructure security for AWS/Azure/GCP
 mode: subagent
+model: github-copilot/claude-sonnet-4.5
 temperature: 0.2
 tools:
   read: true

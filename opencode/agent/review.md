@@ -1,6 +1,7 @@
 ---
 description: Reviews code for quality and best practices
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.2
 tools:
   read: true

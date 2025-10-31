@@ -1,6 +1,7 @@
 ---
 description: Security incident investigation and digital forensics
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.1
 tools:
   read: true

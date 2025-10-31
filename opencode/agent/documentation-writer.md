@@ -1,6 +1,7 @@
 ---
 description: Creates comprehensive technical documentation
 mode: subagent
+model: github-copilot/claude-sonnet-4.5
 temperature: 0.3
 tools:
   read: true

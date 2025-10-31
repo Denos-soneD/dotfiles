@@ -1,6 +1,7 @@
 ---
 description: Designs system architecture and technical solutions
 mode: subagent
+model: github-copilot/gpt-5-mini
 temperature: 0.3
 tools:
   read: true

@@ -1,6 +1,7 @@
 ---
 description: Orchestrates multiple specialized agents for complex tasks
 mode: primary
+model: github-copilot/gpt-5-mini
 temperature: 0.3
 tools:
   task: true
