@@ -1,8 +1,9 @@
 ---
 description: Orchestrates multiple specialized agents for complex tasks
-mode: subagent
+mode: primary
 temperature: 0.3
 tools:
+  task: true
   write: false
   edit: false
   bash: false
