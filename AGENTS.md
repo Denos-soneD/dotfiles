@@ -1,5 +1,12 @@
 # AGENTS
 
+- Agent Workflow
+  - Manager agent uses a three-step workflow for all requests:
+    1. **Prompt-engineer** agent clarifies and optimizes the request
+    2. **Specialized agent(s)** handle the task (architect, refactor, test-writer, security-auditor, etc.)
+    3. **Critic** agent reviews and validates the solution before delivery
+  - New critic agent ensures quality control and catches issues before final output
+
 - Build / install
   - `cd opencode && npm ci` — install JS deps used by tools/plugins
   - `./install.sh` — repo-level installer for dotfiles (where applicable)
