@@ -16,6 +16,7 @@ bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/h
 
 ```
 dotfiles
+├── AGENTS.md
 ├── atuin
 │   └── config.toml
 ├── git
@@ -33,21 +34,38 @@ dotfiles
 │   │   │   ├── lazy.lua
 │   │   │   └── options.lua
 │   │   └── plugins
-│   │       └── example.lua
+│   │       ├── coding-enhancements.lua
+│   │       ├── editor-enhancements.lua
+│   │       ├── example.lua
+│   │       ├── git-integration.lua
+│   │       ├── ui-enhancements.lua
+│   │       └── vim-tmux-navigator.lua
 │   ├── .neoconf.json
 │   └── stylua.toml
 ├── opencode
 │   ├── agent
-│   │   ├── ai-research.md
-│   │   ├── explain.md
-│   │   ├── prompt-engineer.md
-│   │   ├── quickfix.md
-│   │   ├── refactor.md
-│   │   ├── review.md
-│   │   └── test-writer.md
-│   ├── .gitignore
+│   │   ├── codebase-agent.md
+│   │   ├── image-specialist.md
+│   │   ├── subagents
+│   │   │   ├── build-agent.md
+│   │   │   ├── codebase-pattern-analyst.md
+│   │   │   ├── coder-agent.md
+│   │   │   ├── documentation.md
+│   │   │   ├── reviewer.md
+│   │   │   └── tester.md
+│   │   ├── task-manager.md
+│   │   └── workflow-orchestrator.md
+│   ├── command
+│   │   ├── clean.md
+│   │   ├── commit.md
+│   │   ├── context.md
+│   │   ├── optimize.md
+│   │   ├── prompt-enchancer.md
+│   │   ├── test.md
+│   │   └── worktrees.md
 │   └── package.json
 ├── README.MD
+├── setup-tmux.sh
 ├── ssh
 │   └── ssh-config
 ├── .stowrc
