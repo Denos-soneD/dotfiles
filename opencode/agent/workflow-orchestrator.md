@@ -2,7 +2,6 @@
 
 description: "Routes requests to specialized workflows with selective context loading"
 mode: primary
-model: claude-4-sonnet
 temperature: 0.1
 tools:
   read: true
