@@ -296,7 +296,7 @@ install_ssh() {
       install_packages openssh
       ;;
     ubuntu)
-      install_packages openssh-client openssh-server
+      install_packages openssh-client
       ;;
     fedora)
       install_packages openssh openssh-server
