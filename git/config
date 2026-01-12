@@ -40,7 +40,6 @@
 [pager]
     branch = false  # no need to use pager for git branch
     tag = false
-    diff = diff-so-fancy | $PAGER  # diff-so-fancy as diff pager
 
 [push]
     autoSetupRemote = true  # easier to push new branches
@@ -104,12 +103,9 @@
     remoteBranch = magenta
 
 [interactive]
-    diffFilter = diff-so-fancy --patch
     singlekey = true
 
-# Third-party: diff-so-fancy
-[diff-so-fancy]
-    markEmptyLines = false
+
 
 # URL shortcuts
 [url "git@github.com:Denos-soneD/"]
