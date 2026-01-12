@@ -1,0 +1,43 @@
+{
+	"autosave": {
+		"after_delay": {
+			"milliseconds": 1000
+		}
+	},
+	"hard_tabs": true,
+	"icon_theme": "Catppuccin Mocha",
+	"vim_mode": true,
+	"relative_line_numbers": true,
+	"scrollbar": {
+    "show": "never"
+	},
+  "cursor_blink": false,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "GitHub Dark Default"
+  },
+	"base_keymap": "VSCode",
+	"ui_font_size": 16,
+	"buffer_font_size": 15,
+	"buffer_font_family": "JetBrains Mono",
+	"buffer_font_features": {
+		"calt": true
+	},
+	"theme": {
+		"mode": "dark",
+		"light": "One Light",
+		"dark": "GitHub Dark Default"
+	},
+	"current_line_highlight": "gutter",
+	"show_indent_guides": true,
+	"soft_wrap": "editor_width",
+	"format_on_save": "on",
+	"terminal": {
+		"font_family": "JetBrains Mono",
+		"copy_on_select": true
+	},
+	"telemetry": {
+		"metrics": false
+	}
+}
