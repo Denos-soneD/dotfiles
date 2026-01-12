@@ -391,12 +391,27 @@ install_ssh() {
     fi
   fi
 
-  # Display public keys
-  print_info "Your SSH public keys:"
-  echo -e "${BLUE}RSA:${NC}"
-  [ -f "$HOME/.ssh/id_rsa.pub" ] && cat "$HOME/.ssh/id_rsa.pub"
-  echo -e "${BLUE}ED25519:${NC}"
-  [ -f "$HOME/.ssh/id_ed25519.pub" ] && cat "$HOME/.ssh/id_ed25519.pub"
+  # Display public keys - SHOW THESE BEFORE CLONING so user can add to GitHub if needed
+  print_header "SSH Public Keys"
+  print_info "If you are using SSH for GitHub, ensure one of these keys is added to your account:"
+  print_info "https://github.com/settings/keys"
+  echo ""
+  
+  if [ -f "$HOME/.ssh/id_rsa.pub" ]; then
+    echo -e "${BLUE}RSA Key (~/.ssh/id_rsa.pub):${NC}"
+    cat "$HOME/.ssh/id_rsa.pub"
+    echo ""
+  fi
+  
+  if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
+    echo -e "${BLUE}ED25519 Key (~/.ssh/id_ed25519.pub):${NC}"
+    cat "$HOME/.ssh/id_ed25519.pub"
+    echo ""
+  fi
+  
+  # Pause to let user copy keys
+  print_info "Press Enter to continue installation (or Ctrl+C to stop)..."
+  read -r
 
   print_status "SSH setup completed"
 }
@@ -638,6 +653,12 @@ main() {
     else
       print_status "Dotfiles already up to date"
     fi
+  fi
+
+  # Create ~/.config if it doesn't exist (required for stow --target)
+  if [ ! -d "$HOME/.config" ]; then
+    mkdir -p "$HOME/.config"
+    print_info "Created ~/.config directory"
   fi
 
   print_info "Applying stow configurations..."
