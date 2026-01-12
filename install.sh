@@ -364,7 +364,7 @@ install_ssh() {
         print_info "SSH server may not be installed or may use a different service name"
         return
       fi
-      
+
       # Check if systemd is available and active
       if ! command -v systemctl &>/dev/null || ! systemctl list-units --type=service &>/dev/null; then
         print_info "Systemd not available or not active, skipping service management"
@@ -396,19 +396,19 @@ install_ssh() {
   print_info "If you are using SSH for GitHub, ensure one of these keys is added to your account:"
   print_info "https://github.com/settings/keys"
   echo ""
-  
+
   if [ -f "$HOME/.ssh/id_rsa.pub" ]; then
     echo -e "${BLUE}RSA Key (~/.ssh/id_rsa.pub):${NC}"
     cat "$HOME/.ssh/id_rsa.pub"
     echo ""
   fi
-  
+
   if [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
     echo -e "${BLUE}ED25519 Key (~/.ssh/id_ed25519.pub):${NC}"
     cat "$HOME/.ssh/id_ed25519.pub"
     echo ""
   fi
-  
+
   # Pause to let user copy keys
   print_info "Press Enter to continue installation (or Ctrl+C to stop)..."
   read -r
@@ -588,12 +588,12 @@ setup_zed_config() {
 
   mkdir -p "$ZED_CONFIG_DIR"
 
-  # Link settings.json (Fixing the name difference: setting.json -> settings.json)
-  if [ -f "$DOTFILES_DIR/zed/setting.json" ]; then
-    ln -sf "$DOTFILES_DIR/zed/setting.json" "$ZED_CONFIG_DIR/settings.json"
+  # Link settings.json
+  if [ -f "$DOTFILES_DIR/zed/settings.json" ]; then
+    ln -sf "$DOTFILES_DIR/zed/settings.json" "$ZED_CONFIG_DIR/settings.json"
     print_status "Linked settings.json"
   else
-    print_error "Could not find zed/setting.json in dotfiles folder"
+    print_error "Could not find zed/settings.json in dotfiles folder"
   fi
 
   # Link keymap.json
