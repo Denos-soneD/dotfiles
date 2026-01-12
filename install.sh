@@ -110,20 +110,20 @@ setup_locale() {
   case "$OS" in
     arch)
       print_header "Setting up System Locale"
-      
+
       # Check if en_US.UTF-8 locale is available
       if ! locale -a | grep -q "en_US.utf8"; then
         print_info "Generating en_US.UTF-8 locale..."
-        
+
         # Uncomment en_US.UTF-8 in /etc/locale.gen
         sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-        
+
         # Generate locale
         sudo locale-gen
-        
+
         # Set system locale
         echo 'LANG=en_US.UTF-8' | sudo tee /etc/locale.conf
-        
+
         print_status "Locale configured"
       else
         print_status "en_US.UTF-8 locale already available"
@@ -131,7 +131,7 @@ setup_locale() {
       ;;
     ubuntu)
       print_header "Setting up System Locale"
-      
+
       # Check if en_US.UTF-8 locale is available
       if ! locale -a | grep -q "en_US.utf8"; then
         print_info "Generating en_US.UTF-8 locale..."
@@ -160,7 +160,7 @@ install_packages() {
 
   if [ ${#to_install[@]} -gt 0 ]; then
     print_info "Installing packages: ${to_install[*]}"
-    
+
     case "$OS" in
       arch)
         sudo pacman -S --needed --noconfirm "${to_install[@]}"
@@ -187,7 +187,7 @@ install_packages() {
         exit 1
         ;;
     esac
-    
+
     print_status "Packages installed successfully"
   fi
 }
@@ -284,118 +284,6 @@ install_zsh() {
     echo 'export ZDOTDIR="$HOME/.config/zsh"' >>"$HOME/.zshenv"
     print_status "ZDOTDIR set in .zshenv"
   fi
-}
-
-# Tmux Setup
-install_tmux() {
-  print_header "Setting up Tmux Environment"
-
-  # Install Tmux based on OS
-  case "$OS" in
-    arch)
-      install_packages tmux
-      ;;
-    ubuntu)
-      install_packages tmux
-      ;;
-    fedora)
-      install_packages tmux
-      ;;
-    centos)
-      install_packages tmux
-      ;;
-    macos)
-      install_packages tmux
-      ;;
-  esac
-
-  # Install TPM (Tmux Plugin Manager)
-  if dir_exists "$HOME/.tmux/plugins/tpm"; then
-    print_status "TPM is already installed"
-  else
-    print_info "Installing TPM..."
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-    print_status "TPM installed successfully"
-  fi
-
-  print_info "To install plugins, press 'prefix + I' inside Tmux"
-}
-
-install_atuin() {
-  print_header "Setting up Atuin - Command History Manager"
-  
-  # Clean up any existing config
-  rm -rf "$HOME/.config/atuin" "$HOME/.config/atuin/config.toml" 2>/dev/null || true
-  
-  # Check if Atuin is already installed
-  if command -v atuin &>/dev/null; then
-    print_status "Atuin is already installed"
-  else
-    # Install Atuin based on OS
-    case "$OS" in
-      arch)
-        install_packages atuin
-        ;;
-      ubuntu|debian)
-        print_info "Installing Atuin via curl..."
-        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-        # Add to PATH for current session
-        export PATH="$HOME/.atuin/bin:$PATH"
-        ;;
-      fedora)
-        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-        export PATH="$HOME/.atuin/bin:$PATH"
-        ;;
-      centos)
-        curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-        export PATH="$HOME/.atuin/bin:$PATH"
-        ;;
-      macos)
-        install_packages atuin
-        ;;
-    esac
-    print_status "Atuin installed successfully"
-  fi
-
-  # Verify installation
-  if ! command -v atuin &>/dev/null && [ -f "$HOME/.atuin/bin/atuin" ]; then
-    export PATH="$HOME/.atuin/bin:$PATH"
-  fi
-
-  if ! command -v atuin &>/dev/null; then
-    print_error "Atuin installation failed - command not found"
-    return 1
-  fi
-
-  print_info "Atuin installation completed"
-  print_info "After setup, run 'atuin register' to create an account or 'atuin login' if you have one"
-  print_info "Atuin will be configured when you first start your new shell"
-}
-
-# Neovim Installation
-install_neovim() {
-  print_header "Setting up Neovim Configuration"
-
-  # Install Neovim and dependencies based on OS
-  case "$OS" in
-    arch)
-      install_packages neovim luarocks git
-      ;;
-    ubuntu)
-      install_packages neovim luarocks git
-      ;;
-    fedora)
-      install_packages neovim luarocks git
-      ;;
-    centos)
-      install_packages neovim luarocks git
-      ;;
-    macos)
-      install_packages neovim luarocks git
-      ;;
-  esac
-
-  print_info "First launch of Neovim will install plugins automatically"
 }
 
 # SSH Setup
@@ -530,7 +418,7 @@ install_git() {
       ;;
   esac
   print_info "Git installed successfully"
-  
+
   print_info "Installing diff-so-fancy..."
   if ! command -v diff-so-fancy &>/dev/null; then
     case "$OS" in
@@ -585,13 +473,13 @@ install_git() {
 # OpenCode Setup
 install_opencode() {
   print_header "Setting up OpenCode - AI Coding Agent"
-  
+
   # Check if OpenCode is already installed
   if command -v opencode &>/dev/null; then
     print_status "OpenCode is already installed"
     return
   fi
-  
+
   # Install OpenCode based on OS
   case "$OS" in
     arch)
@@ -646,7 +534,7 @@ install_opencode() {
       return 1
       ;;
   esac
-  
+
   # Verify installation
   if command -v opencode &>/dev/null; then
     print_status "OpenCode installed successfully"
@@ -658,10 +546,68 @@ install_opencode() {
   fi
 }
 
+install_zed() {
+  print_header "Installing Zed Editor..."
+
+  if command -v zed &>/dev/null; then
+    print_status "Zed is already installed"
+    return 0
+  fi
+
+  case $OS in
+    "arch")
+      # Arch has Zed in the official repos now
+      sudo pacman -S --noconfirm zed
+      ;;
+    "macos")
+      brew install --cask zed
+      ;;
+    *)
+      # For Ubuntu, Debian, Fedora, etc., use the official script
+      print_info "Downloading official Zed install script..."
+      curl -f https://zed.dev/install.sh | sh
+
+      # Ensure the binary path is available for the rest of the script
+      export PATH=$HOME/.local/bin:$PATH
+      ;;
+  esac
+
+  if command -v zed &>/dev/null; then
+    print_status "Zed installed successfully"
+  else
+    print_error "Zed installation failed"
+  fi
+}
+
+setup_zed_config() {
+  print_header "Linking Zed Configuration..."
+  
+  # Ensure we know where the dotfiles are. 
+  # If you run this script from inside the folder, $(pwd) works.
+  DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+  ZED_CONFIG_DIR="$HOME/.config/zed"
+
+  mkdir -p "$ZED_CONFIG_DIR"
+
+  # Link settings.json (Fixing the name difference: setting.json -> settings.json)
+  if [ -f "$DOTFILES_DIR/zed/setting.json" ]; then
+    ln -sf "$DOTFILES_DIR/zed/setting.json" "$ZED_CONFIG_DIR/settings.json"
+    print_status "Linked settings.json"
+  else
+    print_error "Could not find zed/setting.json in dotfiles folder"
+  fi
+
+  # Link keymap.json
+  if [ -f "$DOTFILES_DIR/zed/keymap.json" ]; then
+    ln -sf "$DOTFILES_DIR/zed/keymap.json" "$ZED_CONFIG_DIR/keymap.json"
+    print_status "Linked keymap.json"
+  fi
+}
+
 # Initialize stow
 install_stow() {
   print_header "Initializing Stow for Dotfiles Management"
-  
+
   if ! command -v stow &>/dev/null; then
     print_info "Installing stow..."
     case "$OS" in
@@ -713,28 +659,29 @@ main() {
   fi
 
   print_info "Applying stow configurations..."
-  rm -rf "$HOME/.config/zsh" "$HOME/.config/nvim" "$HOME/.config/tmux" "$HOME/.config/atuin" "$HOME/.config/git" "$HOME/.config/ssh" 2>/dev/null || true
+  rm -rf "$HOME/.config/zsh" "$HOME/.config/atuin" "$HOME/.config/git" "$HOME/.config/ssh" 2>/dev/null || true
   cd "$HOME/dotfiles"
   stow .
-  
+
   install_zsh
   install_neovim
-  install_tmux
   install_atuin
   install_opencode
+  install_zed
+  setup_zed_config
 
   if [ "$SHELL" != "/bin/zsh" ] && [ "$SHELL" != "$(which zsh)" ]; then
   print_info "Changing default shell to zsh..."
-  
+
   # Get zsh path
   local zsh_path=$(which zsh)
-  
+
   # Check if zsh is in /etc/shells
   if ! grep -q "^$zsh_path$" /etc/shells; then
     print_info "Adding zsh to /etc/shells..."
     echo "$zsh_path" | sudo tee -a /etc/shells
   fi
-  
+
   # Try common zsh paths
   if chsh -s /bin/zsh 2>/dev/null; then
     print_status "Shell changed to zsh (/bin/zsh)"
@@ -750,8 +697,6 @@ main() {
   source ~/.config/zsh/.zshrc
   print_status "Dotfiles setup completed successfully!"
   source ~/.config/zsh/.zshrc
-
-  ./setup-tmux.sh
 }
 
 # Run main function
