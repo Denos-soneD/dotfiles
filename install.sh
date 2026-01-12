@@ -419,55 +419,34 @@ install_git() {
   esac
   print_info "Git installed successfully"
 
-  print_info "Installing diff-so-fancy..."
-  if ! command -v diff-so-fancy &>/dev/null; then
-    case "$OS" in
-      arch)
-        install_packages diff-so-fancy
-        ;;
-      ubuntu)
-        # diff-so-fancy is not available in Ubuntu apt repos, install via npm or direct download
-        if command -v npm &>/dev/null; then
-          print_info "Installing diff-so-fancy via npm..."
-          sudo npm install -g diff-so-fancy
-        else
-          print_info "Installing diff-so-fancy via snap..."
-          if ! command -v snap &>/dev/null; then
-            print_info "Installing snapd..."
-            sudo apt update
-            sudo apt install -y snapd
-          fi
-          print_info "Starting and enabling snapd service..."
-          sudo systemctl start snapd
-          sudo systemctl enable snapd
-          print_info "Installing diff-so-fancy via snap..."
-          sudo snap install diff-so-fancy
-        fi
-        ;;
-      fedora)
-        install_packages diff-so-fancy
-        ;;
-      centos)
-        install_packages diff-so-fancy
-        ;;
-      macos)
-        if ! command -v brew &>/dev/null; then
-          print_info "Installing Homebrew..."
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        fi
-        brew install diff-so-fancy
-        ;;
-      *)
-        print_error "diff-so-fancy installation not supported for this OS"
-        exit 1
-        ;;
-    esac
-    print_status "diff-so-fancy installed successfully"
-  else
-    print_status "diff-so-fancy is already installed"
-  fi
+
 
   print_info "Git Initialization completed"
+}
+
+# Atuin Setup
+install_atuin() {
+  print_header "Setting up Atuin Shell History"
+
+  if command -v atuin &>/dev/null; then
+    print_status "Atuin is already installed"
+    return
+  fi
+
+  print_info "Installing Atuin..."
+  # Use official install script
+  curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh | sh
+
+  # Ensure binary is in path for immediate use
+  export PATH="$HOME/.atuin/bin:$PATH"
+
+  if command -v atuin &>/dev/null; then
+    print_status "Atuin installed successfully"
+    # Import history
+    atuin import auto
+  else
+    print_error "Atuin installation failed"
+  fi
 }
 
 # OpenCode Setup
@@ -581,9 +560,7 @@ install_zed() {
 
 setup_zed_config() {
   print_header "Linking Zed Configuration..."
-  
-  # Ensure we know where the dotfiles are. 
-  # If you run this script from inside the folder, $(pwd) works.
+
   DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
   ZED_CONFIG_DIR="$HOME/.config/zed"
 
@@ -631,7 +608,6 @@ install_stow() {
   fi
 }
 
-# Main function
 main() {
   check_root
   detect_os
@@ -659,12 +635,31 @@ main() {
   fi
 
   print_info "Applying stow configurations..."
-  rm -rf "$HOME/.config/zsh" "$HOME/.config/atuin" "$HOME/.config/git" "$HOME/.config/ssh" 2>/dev/null || true
+
+  # Smart backup of existing configurations
+  local config_dirs=("zsh" "atuin" "git" "ssh")
+  local backup_dir="$HOME/.config/dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
+  local did_backup=0
+
+  for dir in "${config_dirs[@]}"; do
+    local target="$HOME/.config/$dir"
+    if [ -d "$target" ] && [ ! -L "$target" ]; then
+      if [ $did_backup -eq 0 ]; then
+        mkdir -p "$backup_dir"
+        print_info "Backing up existing configurations to $backup_dir"
+        did_backup=1
+      fi
+      mv "$target" "$backup_dir/"
+      print_status "Backed up $dir"
+    elif [ -L "$target" ]; then
+      rm "$target"
+    fi
+  done
+
   cd "$HOME/dotfiles"
   stow .
 
   install_zsh
-  install_neovim
   install_atuin
   install_opencode
   install_zed
@@ -696,7 +691,6 @@ main() {
   fi
   source ~/.config/zsh/.zshrc
   print_status "Dotfiles setup completed successfully!"
-  source ~/.config/zsh/.zshrc
 }
 
 # Run main function
