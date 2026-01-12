@@ -463,8 +463,9 @@ install_atuin() {
 
   if command -v atuin &>/dev/null; then
     print_status "Atuin installed successfully"
-    # Import history
-    atuin import auto
+    # Import history (allow failure if no history found)
+    print_info "Importing shell history..."
+    atuin import auto || print_info "No existing shell history found to import (safe to ignore)"
   else
     print_error "Atuin installation failed"
   fi
