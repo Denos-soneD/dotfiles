@@ -364,6 +364,12 @@ install_ssh() {
         print_info "SSH server may not be installed or may use a different service name"
         return
       fi
+      
+      # Check if systemd is available and active
+      if ! command -v systemctl &>/dev/null || ! systemctl list-units --type=service &>/dev/null; then
+        print_info "Systemd not available or not active, skipping service management"
+        return
+      fi
 
       # Enable SSH service
       if systemctl is-enabled "$ssh_service.service" &>/dev/null; then
