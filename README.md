@@ -16,7 +16,6 @@ bash <(curl -fsSL 'https://raw.githubusercontent.com/Denos-soneD/dotfiles/refs/h
 
 ```
 dotfiles
-├── AGENTS.md
 ├── atuin
 │   └── config.toml
 ├── git
@@ -48,9 +47,10 @@ dotfiles
 ├── README.md
 ├── ssh
 │   └── ssh-config
-├── .stowrc
+├── zed
+│   ├── keymap.json
+│   └── settings.json
 └── zsh
-    └── .zshrc
 ```
 
 ---
