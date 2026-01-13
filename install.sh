@@ -714,19 +714,25 @@ main() {
   fi
 
   # Try common zsh paths
-  if chsh -s /bin/zsh 2>/dev/null; then
-    print_status "Shell changed to zsh (/bin/zsh)"
-  elif chsh -s "$zsh_path" 2>/dev/null; then
-    print_status "Shell changed to zsh ($zsh_path)"
+  # Check if running interactively
+  if [ -t 0 ]; then
+    if chsh -s /bin/zsh 2>/dev/null; then
+      print_status "Shell changed to zsh (/bin/zsh)"
+    elif chsh -s "$zsh_path" 2>/dev/null; then
+      print_status "Shell changed to zsh ($zsh_path)"
+    else
+      print_error "Failed to change shell to zsh"
+      print_info "You may need to manually run: chsh -s $(which zsh)"
+    fi
   else
-    print_error "Failed to change shell to zsh"
-    print_info "You may need to manually run: chsh -s $(which zsh)"
+    print_info "Running non-interactively, skipping automatic shell change"
+    print_info "Please run this manually after installation: chsh -s $(which zsh)"
   fi
   else
     print_status "Shell is already set to zsh"
   fi
-  source ~/.config/zsh/.zshrc
   print_status "Dotfiles setup completed successfully!"
+  print_info "Please restart your terminal or log out and back in for changes to take effect."
 }
 
 # Run main function
