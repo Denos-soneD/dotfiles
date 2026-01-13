@@ -590,16 +590,24 @@ setup_zed_config() {
 
   # Link settings.json
   if [ -f "$DOTFILES_DIR/zed/settings.json" ]; then
-    ln -sf "$DOTFILES_DIR/zed/settings.json" "$ZED_CONFIG_DIR/settings.json"
-    print_status "Linked settings.json"
+    if [ ! "$DOTFILES_DIR/zed/settings.json" -ef "$ZED_CONFIG_DIR/settings.json" ]; then
+      ln -sf "$DOTFILES_DIR/zed/settings.json" "$ZED_CONFIG_DIR/settings.json"
+      print_status "Linked settings.json"
+    else
+      print_status "settings.json already linked"
+    fi
   else
     print_error "Could not find zed/settings.json in dotfiles folder"
   fi
 
   # Link keymap.json
   if [ -f "$DOTFILES_DIR/zed/keymap.json" ]; then
-    ln -sf "$DOTFILES_DIR/zed/keymap.json" "$ZED_CONFIG_DIR/keymap.json"
-    print_status "Linked keymap.json"
+    if [ ! "$DOTFILES_DIR/zed/keymap.json" -ef "$ZED_CONFIG_DIR/keymap.json" ]; then
+      ln -sf "$DOTFILES_DIR/zed/keymap.json" "$ZED_CONFIG_DIR/keymap.json"
+      print_status "Linked keymap.json"
+    else
+      print_status "keymap.json already linked"
+    fi
   fi
 }
 
