@@ -713,16 +713,17 @@ main() {
     echo "$zsh_path" | sudo tee -a /etc/shells
   fi
 
-  # Try common zsh paths
   # Check if running interactively
   if [ -t 0 ]; then
-    if chsh -s /bin/zsh 2>/dev/null; then
-      print_status "Shell changed to zsh (/bin/zsh)"
-    elif chsh -s "$zsh_path" 2>/dev/null; then
+    print_info "Attempting to change default shell to zsh..."
+    print_info "You may be asked for your password."
+    
+    # Try to change shell without silencing output so prompts are visible
+    if chsh -s "$zsh_path"; then
       print_status "Shell changed to zsh ($zsh_path)"
     else
-      print_error "Failed to change shell to zsh"
-      print_info "You may need to manually run: chsh -s $(which zsh)"
+      print_error "Automatic shell change failed or was cancelled."
+      print_info "Please manually run: chsh -s $zsh_path"
     fi
   else
     print_info "Running non-interactively, skipping automatic shell change"
