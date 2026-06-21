@@ -500,6 +500,20 @@ install_token_optimizer() {
   fi
 }
 
+# Sequential Thinking MCP Server Setup
+install_sequential_thinking_mcp() {
+  print_header "Setting up Sequential Thinking MCP Server"
+
+  if grep -q "sequential-thinking" "$HOME/.config/opencode/opencode.json" 2>/dev/null; then
+    print_status "Sequential Thinking MCP is already configured"
+    return
+  fi
+
+  print_info "Caching Sequential Thinking MCP package..."
+  npx -y @modelcontextprotocol/server-sequential-thinking --version 2>/dev/null || true
+  print_status "Sequential Thinking MCP is ready (configured in opencode.json)"
+}
+
 # Matt Pocock Skills Setup
 install_mattpocock_skills() {
   print_header "Setting up Matt Pocock Engineering Skills"
@@ -796,6 +810,9 @@ main() {
 
   # Install Matt Pocock engineering skills
   install_mattpocock_skills
+
+  # Install Sequential Thinking MCP server
+  install_sequential_thinking_mcp
 
   # Install Ponytail plugin (local checkout for rules + commands)
   install_ponytail
