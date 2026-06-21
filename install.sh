@@ -500,6 +500,27 @@ install_token_optimizer() {
   fi
 }
 
+# Matt Pocock Skills Setup
+install_mattpocock_skills() {
+  print_header "Setting up Matt Pocock Engineering Skills"
+
+  local SKILLS_DIR="$HOME/.agents/skills"
+
+  if [ -d "$SKILLS_DIR/setup-matt-pocock-skills" ]; then
+    print_status "Matt Pocock skills are already installed"
+    return
+  fi
+
+  print_info "Installing 34 Matt Pocock skills..."
+  npx skills@latest add mattpocock/skills -y 2>/dev/null
+
+  if [ -d "$SKILLS_DIR/setup-matt-pocock-skills" ]; then
+    print_status "Matt Pocock skills installed successfully"
+  else
+    print_error "Matt Pocock skills installation failed"
+  fi
+}
+
 # Ponytail Plugin Setup (local checkout for rules + commands)
 install_ponytail() {
   print_header "Setting up Ponytail - Lazy Senior Dev Rules"
@@ -772,6 +793,9 @@ main() {
 
   # Install Token Optimizer plugin (offline build)
   install_token_optimizer
+
+  # Install Matt Pocock engineering skills
+  install_mattpocock_skills
 
   # Install Ponytail plugin (local checkout for rules + commands)
   install_ponytail
