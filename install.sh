@@ -471,6 +471,64 @@ install_atuin() {
   fi
 }
 
+# Token Optimizer Plugin Setup (offline build)
+install_token_optimizer() {
+  print_header "Setting up Token Optimizer Plugin"
+
+  local TO_DIR="$HOME/token-optimizer"
+
+  if [ -d "$TO_DIR" ]; then
+    print_info "Token Optimizer directory exists, checking for updates..."
+    cd "$TO_DIR"
+    git fetch origin main 2>/dev/null || true
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main 2>/dev/null)" ] 2>/dev/null; then
+      print_info "Updates available, pulling..."
+      git pull origin main 2>/dev/null || true
+    fi
+  else
+    print_info "Cloning Token Optimizer..."
+    git clone https://github.com/alexgreensh/token-optimizer.git "$TO_DIR"
+  fi
+
+  print_info "Installing Token Optimizer plugin..."
+  if [ -f "$TO_DIR/install.sh" ]; then
+    bash "$TO_DIR/install.sh" --opencode 2>/dev/null
+    print_status "Token Optimizer plugin installed"
+  else
+    print_info "Token Optimizer install.sh not found, skipping offline build"
+    print_info "Plugin will be loaded via npm at runtime (configured in opencode.json)"
+  fi
+}
+
+# Ponytail Plugin Setup (local checkout for rules + commands)
+install_ponytail() {
+  print_header "Setting up Ponytail - Lazy Senior Dev Rules"
+
+  local PT_DIR="$HOME/ponytail"
+
+  if [ -d "$PT_DIR" ]; then
+    print_info "Ponytail directory exists, checking for updates..."
+    cd "$PT_DIR"
+    git fetch origin main 2>/dev/null || true
+    if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main 2>/dev/null)" ] 2>/dev/null; then
+      print_info "Updates available, pulling..."
+      git pull origin main 2>/dev/null || true
+    fi
+  else
+    print_info "Cloning Ponytail..."
+    git clone https://github.com/DietrichGebert/ponytail.git "$PT_DIR"
+  fi
+
+  if [ -d "$HOME/.config/opencode" ] && [ -d "$PT_DIR/.opencode/command" ]; then
+    print_info "Linking Ponytail commands to OpenCode..."
+    mkdir -p "$HOME/.config/opencode/command"
+    ln -sf "$PT_DIR/.opencode/command/"* "$HOME/.config/opencode/command/" 2>/dev/null || true
+    print_status "Ponytail commands linked"
+  fi
+
+  print_status "Ponytail setup complete (configured in opencode.json as opencode-ponytail plugin)"
+}
+
 # OpenCode Setup
 install_opencode() {
   print_header "Setting up OpenCode - AI Coding Agent"
@@ -700,6 +758,23 @@ main() {
   install_opencode
   install_zed
   setup_zed_config
+
+  # Install OpenCode plugin SDK dependencies
+  print_header "Setting up OpenCode Plugin Dependencies"
+  if [ -f "$HOME/.config/opencode/package.json" ]; then
+    cd "$HOME/.config/opencode"
+    print_info "Installing OpenCode plugin SDK..."
+    npm ci --quiet 2>/dev/null || npm install --quiet 2>/dev/null || true
+    print_status "OpenCode plugin SDK installed"
+  else
+    print_info "No OpenCode package.json found, skipping plugin SDK install"
+  fi
+
+  # Install Token Optimizer plugin (offline build)
+  install_token_optimizer
+
+  # Install Ponytail plugin (local checkout for rules + commands)
+  install_ponytail
 
   if [ "$SHELL" != "/bin/zsh" ] && [ "$SHELL" != "$(which zsh)" ]; then
   print_info "Changing default shell to zsh..."

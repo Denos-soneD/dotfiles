@@ -23,28 +23,13 @@ dotfiles
 │   └── template
 ├── install.sh
 ├── opencode
-│   ├── agent
-│   │   ├── codebase-agent.md
-│   │   ├── image-specialist.md
-│   │   ├── subagents
-│   │   │   ├── build-agent.md
-│   │   │   ├── codebase-pattern-analyst.md
-│   │   │   ├── coder-agent.md
-│   │   │   ├── documentation.md
-│   │   │   ├── reviewer.md
-│   │   │   └── tester.md
-│   │   ├── task-manager.md
-│   │   └── workflow-orchestrator.md
-│   ├── command
-│   │   ├── clean.md
-│   │   ├── commit.md
-│   │   ├── context.md
-│   │   ├── optimize.md
-│   │   ├── prompt-enchancer.md
-│   │   ├── test.md
-│   │   └── worktrees.md
-│   └── package.json
-├── README.md
+│   ├── oh-my-openagent.json
+│   ├── opencode.json
+│   ├── package.json
+│   ├── package-lock.json
+│   └── tui.json
+├── README.MD
+├── setup-tmux.sh:README.MD
 ├── ssh
 │   └── ssh-config
 ├── zed
