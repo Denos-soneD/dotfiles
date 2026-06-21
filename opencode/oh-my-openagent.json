@@ -1,0 +1,103 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "oracle": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "librarian": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "reasoningEffort": "max",
+      "fallback_models": [
+        {
+          "model": "opencode-go/mimo-v2.5",
+          "reasoningEffort": "max"
+        }
+      ]
+    },
+    "explore": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "reasoningEffort": "max",
+      "fallback_models": [
+        {
+          "model": "opencode-go/mimo-v2.5",
+          "reasoningEffort": "max"
+        }
+      ]
+    },
+    "multimodal-looker": {
+      "model": "opencode-go/minimax-m3",
+      "reasoningEffort": "max"
+    },
+    "prometheus": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "metis": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "momus": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "atlas": {
+      "model": "opencode-go/minimax-m3",
+      "reasoningEffort": "max"
+    },
+    "sisyphus-junior": {
+      "model": "opencode-go/minimax-m3",
+      "reasoningEffort": "max"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "opencode-go/minimax-m3",
+      "reasoningEffort": "max"
+    },
+    "ultrabrain": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "deep": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "artistry": {
+      "model": "opencode-go/minimax-m3",
+      "reasoningEffort": "max"
+    },
+    "quick": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "reasoningEffort": "max",
+      "fallback_models": [
+        {
+          "model": "opencode-go/mimo-v2.5",
+          "reasoningEffort": "max"
+        }
+      ]
+    },
+    "unspecified-low": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "reasoningEffort": "max",
+      "fallback_models": [
+        {
+          "model": "opencode-go/mimo-v2.5",
+          "reasoningEffort": "max"
+        }
+      ]
+    },
+    "unspecified-high": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    },
+    "writing": {
+      "model": "zai-coding-plan/glm-5.2",
+      "reasoningEffort": "max"
+    }
+  }
+}

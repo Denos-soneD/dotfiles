@@ -29,7 +29,7 @@ dotfiles
 │   ├── package-lock.json
 │   └── tui.json
 ├── README.MD
-├── setup-tmux.sh:README.MD
+├── setup-tmux.sh
 ├── ssh
 │   └── ssh-config
 ├── zed

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "plugin": [
+    "oh-my-openagent@latest",
+    [
+      "token-optimizer-opencode",
+      {
+        "qualityWindow": 20,
+        "features": {
+          "qualityNudges": true,
+          "loopDetection": true,
+          "smartCompaction": true,
+          "continuity": true,
+          "activityTracking": true,
+          "trends": true
+        }
+      }
+    ],
+    [
+      "opencode-ponytail",
+      {
+        "defaultMode": "full"
+      }
+    ]
+  ]
+}
